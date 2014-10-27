@@ -1,0 +1,7 @@
+*~
+.DS_Store
+
+# Hidden system files
+*.DS_Store
+*[Tt]humbs.db
+*.Trashes
