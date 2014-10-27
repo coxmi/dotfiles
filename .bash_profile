@@ -30,3 +30,9 @@
              echo "'$1' is not a valid file"
          fi
     }
+
+
+# Create a new directory and enter it
+  function mkd() {
+      mkdir -p "$@" && cd "$@"
+  }
