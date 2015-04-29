@@ -1,4 +1,13 @@
 
+# Add colours
+  export CLICOLOR=1
+  export LSCOLORS=ExFxBxDxCxegedabagacad
+
+
+# Coloured output for `ls`
+  alias ls='ls -G'
+
+
 # Rename Tab
   function tabname {
        printf "\e]1;$1\a"
