@@ -1,0 +1,11 @@
+#!/bin/bash
+
+
+# node modules relative to current working directory
+export PATH="./node_modules/.bin:$PATH"
+
+# mysql
+export PATH="/usr/local/mysql/bin:$PATH"
+
+# bin folder in $HOME
+export PATH="$HOME/.local/bin:$PATH"

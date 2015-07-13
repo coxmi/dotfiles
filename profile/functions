@@ -1,24 +1,13 @@
-
-# Add colours
-  export CLICOLOR=1
-  export LSCOLORS=ExFxBxDxCxegedabagacad
+#!/bin/bash
 
 
-# Coloured output for `ls`
-  alias ls='ls -G'
+# rename terminal tab
+	function tabname {
+		printf "\e]1;$1\a"
+	}
 
 
-# Rename Tab
-  function tabname {
-       printf "\e]1;$1\a"
-  }
-
-
-# Add MAMP php/mysql commands
-  export PATH="$PATH:/Applications/MAMP/Library/bin/"
-
-
-# extract:  Extract most know archives with one command
+# extract most know archives with one command
     extract () {
         if [ -f $1 ] ; then
           case $1 in
@@ -42,6 +31,6 @@
 
 
 # Create a new directory and enter it
-  function mkd() {
-      mkdir -p "$@" && cd "$@"
-  }
+	function mkd() {
+		mkdir -p "$@" && cd "$@"
+	}

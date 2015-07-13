@@ -1,0 +1,14 @@
+#!/bin/bash
+
+
+# make intermediate folders
+alias mkdir='mkdir -p'
+
+
+# Coloured output for `ls`
+alias ls='ls -G'
+
+
+# apple show or hide files
+alias showfiles='defaults write com.apple.finder AppleShowAllFiles YES; killall Finder'
+alias hidefiles='defaults write com.apple.finder AppleShowAllFiles NO; killall Finder'
