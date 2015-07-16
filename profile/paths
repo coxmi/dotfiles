@@ -7,5 +7,8 @@ export PATH="./node_modules/.bin:$PATH"
 # mysql
 export PATH="/usr/local/mysql/bin:$PATH"
 
+# composer
+export PATH="./vendor/bin:$PATH"
+
 # bin folder in $HOME
 export PATH="$HOME/.local/bin:$PATH"
