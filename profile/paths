@@ -3,6 +3,9 @@
 # bin folder in $HOME
 export PATH="$HOME/.local/bin:$PATH"
 
+# macports
+export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
+
 # node modules relative to current working directory
 export PATH="./node_modules/.bin:$PATH"
 
