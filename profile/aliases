@@ -16,3 +16,6 @@ alias hidefiles='defaults write com.apple.finder AppleShowAllFiles NO; killall F
 
 # apache
 alias apacherestart='sudo apachectl restart'
+
+# mysql
+alias mysqlrestart='sudo /usr/local/mysql/support-files/mysql.server restart'
