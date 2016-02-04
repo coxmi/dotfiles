@@ -1,3 +1,2 @@
 #!/bin/bash
 
-export ANSIBLE_INVENTORY=~/Projects/ansible/hosts
