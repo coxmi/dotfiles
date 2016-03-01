@@ -7,6 +7,12 @@
 	}
 
 
+# rename terminal window
+  function winname {
+    printf "\e]2;$1\a"
+  }
+
+
 # extract most know archives with one command
   extract () {
       if [ -f $1 ] ; then
