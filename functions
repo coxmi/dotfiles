@@ -1,5 +1,20 @@
 #!/bin/bash
 
+# show/hide finder 
+
+	function files {
+		STATUS=`defaults read com.apple.finder AppleShowAllFiles` 
+		
+		if [ $STATUS == 1 ] 
+			then 
+				defaults write com.apple.finder AppleShowAllFiles -boolean false
+			else 
+				defaults write com.apple.finder AppleShowAllFiles -boolean true
+		fi
+		 
+		killall Finder
+	}
+
 
 # rename terminal tab
 	function tabname {
@@ -14,7 +29,7 @@
 
 
 # extract most know archives with one command
-  extract () {
+  function extract {
       if [ -f $1 ] ; then
         case $1 in
           *.tar.bz2)   tar xjf $1     ;;
@@ -37,6 +52,6 @@
 
 
 # Create a new directory and enter it
-	function mkd() {
+	function mkd {
 		mkdir -p "$@" && cd "$@"
 	}
