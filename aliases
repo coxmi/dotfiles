@@ -22,3 +22,4 @@ alias mysqlrestart='sudo /usr/local/mysql/support-files/mysql.server restart'
 
 # delete trash
 alias deletetrash='sudo rm -rf ~/.Trash/*'
+alias emptytrash='deletetrash'
