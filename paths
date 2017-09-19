@@ -8,6 +8,7 @@ export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
 
 # homebrew
 export PATH="/usr/local/sbin:$PATH"
+export PATH="/usr/local/bin:$PATH"
 
 # node modules relative to current working directory
 export PATH="./node_modules/.bin:$PATH"
