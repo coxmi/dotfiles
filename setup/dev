@@ -1,0 +1,33 @@
+#!/bin/bash
+
+###############################################################################
+# Check for Homebrew, else install
+###############################################################################
+
+if [ -z `command -v brew` ]; then
+    echo "Brew is missing! Installing it..."
+    ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+fi;
+
+brew update
+brew upgrade
+
+###############################################################################
+# Install utilities
+###############################################################################
+
+brew install coreutils
+brew install yarn
+brew install caskroom/cask/brew-cask
+
+brew tap caskroom/versions
+brew tap caskroom/fonts
+
+###############################################################################
+# Install fonts with Homebrew Cask
+###############################################################################
+
+fonts=(
+  font-source-sans-pro
+)
+brew cask install ${fonts[@]}

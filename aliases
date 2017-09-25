@@ -5,7 +5,7 @@
 alias mkdir='mkdir -p'
 
 
-# Coloured output for `ls`
+# coloured output for `ls`
 alias ls='ls -G'
 
 
@@ -17,9 +17,19 @@ alias hidefiles='defaults write com.apple.finder AppleShowAllFiles NO; killall F
 # apache
 alias apacherestart='sudo apachectl restart'
 
+
 # mysql
 alias mysqlrestart='sudo /usr/local/mysql/support-files/mysql.server restart'
+
 
 # delete trash
 alias deletetrash='sudo rm -rf ~/.Trash/*'
 alias emptytrash='deletetrash'
+
+
+# URL-encode strings
+alias urlencode='python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1]);"'
+
+
+# print each PATH entry on a separate line
+alias path='echo -e ${PATH//:/\\n}'

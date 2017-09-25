@@ -1,19 +1,10 @@
 #!/bin/bash
 
 # bin folder in $HOME
-export PATH="$HOME/.local/bin:$PATH"
-
-# macports
-export PATH="/opt/local/bin:/opt/local/sbin:$PATH"
-
-# homebrew
-export PATH="/usr/local/sbin:$PATH"
+export PATH="$HOME/.bin:$PATH"
 
 # node modules relative to current working directory
 export PATH="./node_modules/.bin:$PATH"
-
-# mysql
-export PATH="/usr/local/mysql/bin:$PATH"
 
 # composer
 export PATH="./vendor/bin:$PATH"

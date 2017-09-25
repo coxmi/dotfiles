@@ -1,21 +1,5 @@
 #!/bin/bash
 
-# show/hide finder 
-
-	function files {
-		STATUS=`defaults read com.apple.finder AppleShowAllFiles` 
-		
-		if [ $STATUS == 1 ] 
-			then 
-				defaults write com.apple.finder AppleShowAllFiles -boolean false
-			else 
-				defaults write com.apple.finder AppleShowAllFiles -boolean true
-		fi
-		 
-		killall Finder
-	}
-
-
 # rename terminal tab
 	function tabname {
 		printf "\e]1;$1\a"
