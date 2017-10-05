@@ -1,7 +1,0 @@
-#!/bin/bash
-
-# get current directory
-DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
-
-source $DIR/macOS
-source $DIR/dev

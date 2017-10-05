@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 
 # make intermediate folders
@@ -28,8 +28,16 @@ alias emptytrash='deletetrash'
 
 
 # URL-encode strings
-alias urlencode='python -c "import sys, urllib as ul; print ul.quote_plus(sys.argv[1]);"'
-
+function urlencode() {
+  for a in "$@"; do
+    echo $(php -r "echo urlencode('$a');")
+  done
+}
 
 # print each PATH entry on a separate line
 alias path='echo -e ${PATH//:/\\n}'
+
+
+# editor
+alias edit='subl'
+alias e='edit'

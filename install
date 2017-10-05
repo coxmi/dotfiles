@@ -1,0 +1,145 @@
+#!/usr/bin/env bash
+
+
+# Ask for the administrator password upfront
+
+    echo "Installing dotfiles at $HOME/.dotfiles."
+
+    sudo -v
+
+
+# Setup dotfiles repo and terminal
+
+    DOTFILES=~/.dotfiles && mkdir -p $DOTFILES && cd $DOTFILES    
+
+    # git clone https://github.com/michaeland/dotfiles.git .
+
+    touch ~/.bash_profile
+
+    if ! grep -Fq "edit dotfiles" ~/.bash_profile ; then
+        echo -e "\n# edit dotfiles in ~/.dotfiles \n\nsource ~/.dotfiles/.bash_profile \n\n# machine-specific \n" >> ~/.bash_profile
+        source ~/.bash_profile
+    fi    
+
+
+# Symlink dotfiles to ~
+    
+    echo "linking dotfiles to ~"
+    ln -sfv "$DOTFILES/.bashrc" ~ >> /dev/null
+    ln -sfv "$DOTFILES/.gitignore_global" ~ >> /dev/null
+
+
+# Install nvm
+    
+    if ! [ -d ~/.nvm ]; then
+
+        export NVM_DIR="$HOME/.nvm" && (
+            git clone https://github.com/creationix/nvm.git "$NVM_DIR"
+            cd "$NVM_DIR"
+            git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" origin`
+        ) && . "$NVM_DIR/nvm.sh"
+
+        # and install node
+        nvm install node
+
+        # back to dotfiles
+        cd $DOTFILES;
+    else
+        echo "nvm already installed, skipping…"
+    fi;
+
+
+# Install homebrew
+
+    if ! [ -x "$(command -v brew)" ]; then
+        # Homebrew is missing, install it
+        echo "Installing Homebrew…"
+        ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+        brew update
+        brew upgrade
+    else
+        echo "Homebrew is already installed, skipping…"
+    fi;
+
+
+
+# Install utilities
+
+    echo "Installing brew utilities…"
+
+    brew install coreutils
+    brew install yarn --without-node
+
+    brew tap caskroom/cask
+    brew tap caskroom/fonts
+
+
+# Install apps
+
+    echo "Installing apps…"
+
+    apps=(
+        sourcetree
+        sequel-pro
+        virtualbox
+        google-chrome
+        firefox
+        transmit
+        bettertouchtool
+        dropbox
+        spotify
+        vlc
+        transmission
+        macdown
+    )
+
+    brew cask install "${apps[@]}" --appdir=/Applications
+
+
+# Install QuickLook plugins (https://github.com/sindresorhus/quick-look-plugins)
+
+    echo "Installing quicklook plugins…"
+
+    ql=(
+        qlcolorcode
+        qlstephen
+        qlmarkdown
+        quicklook-json
+        qlprettypatch
+        quicklook-csv
+        qlimagesize
+        webpquicklook
+        quicklookase
+        qlvideo
+        quicklook-pat
+    )
+
+    brew cask install "${ql[@]}"
+
+
+# Install fonts
+
+    echo "Installing fonts…"
+
+    fonts=(
+      font-source-code-pro
+      font-fira-code
+    )
+    brew cask install ${fonts[@]}
+
+
+# Sublime
+
+    echo "Installing sublime text…"
+
+    brew cask install sublime-text --appdir=/Applications
+
+    # move prefs into place
+    mkdir -p ~/Library/Application\ Support/Sublime\ Text\ 3
+    cp -a $DOTFILES/sublime/. ~/Library/Application\ Support/Sublime\ Text\ 3
+
+    # replace icon
+    rm -f /Applications/Sublime\ Text.app/Contents/Resources/Sublime\ Text.icns
+    cp $DOTFILES/settings/Sublime\ Text.icns /Applications/Sublime\ Text.app/Contents/Resources/Sublime\ Text.icns
+
+

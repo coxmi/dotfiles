@@ -1,0 +1,4 @@
+[
+	{ "keys": ["super+shift+d"], "command": "toggle_side_bar" },
+	{ "keys": ["ctrl+w"], "command": "toggle_setting", "args": {"setting": "word_wrap"}}
+]

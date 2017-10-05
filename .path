@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # bin folder in $HOME
 export PATH="$HOME/.bin:$PATH"
