@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+# bootstrap loads the shell environment/profile
+
+# adds ~/.dotfiles/bin to PATH and export
+
+export DOTFILES="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+
+export PATH="$DOTFILES/bin:$PATH"
+
+# Load shell env — source all ${folder}/{alias,functions,path,profile,prompt} files
+
+shopt -s extglob; # allows extended glob, e.g. !(bin)
+
+for file in $DOTFILES/!(bin)/{alias,functions,path,profile,prompt}; do
+    if [ -r "$file" ] && [ -x $file ]; then
+        source $file
+    fi
+done
+

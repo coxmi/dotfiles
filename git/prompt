@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+
 prompt_git() {
 
 	local s=''
@@ -50,41 +51,3 @@ prompt_git() {
 		return
 	fi
 }
-
-# set colours
-
-	if tput setaf 1 &> /dev/null; then
-		bold=$(tput bold)
-		reset=$(tput sgr0)
-		black=$(tput setaf 0)
-		blue=$(tput setaf 33)
-		cyan=$(tput setaf 37)
-		green=$(tput setaf 64)
-		orange=$(tput setaf 166)
-		purple=$(tput setaf 125)
-		red=$(tput setaf 124)
-		violet=$(tput setaf 61)
-		white=$(tput setaf 15)
-		yellow=$(tput setaf 136)
-	fi
-
-
-# Set the terminal title and prompt.
-
-	# reset
-	PS1="\[${reset}\]"
-	# go to first column
-	PS1+="\[\033[G\]"
-	# working directory full path
-	PS1+="\[${purple}\]\[${bold}\]\w\[${reset}\]"
-	# git repository details
-	PS1+="\$(prompt_git \"\[${white}\] on \[${violet}\]\" \"\[${blue}\]\")"
-	# `☞` (and reset color)
-	PS1+="\[${reset}\] ☞  "
-	# add newlines before PS1
-	PS1="\n$PS1"
-	# export
-	export PS1
-
-	PS2="\[${yellow}\]→ \[${reset}\]"
-	export PS2

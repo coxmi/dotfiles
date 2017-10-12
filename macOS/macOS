@@ -1,36 +1,37 @@
 #!/usr/bin/env bash
 
+if test "$(uname)" != "Darwin"; then
+    echo "OS is not macOS"
+    exit 0
+fi
 
-# Setup
-###############################################################################
-
-DOTFILES=~/.dotfiles
-
-echo "What’s my name?"
-read COMPUTERNAME
-
-echo "\"${COMPUTERNAME}\"? Okay. Please enter your password to install…"
 
 # Ask for the administrator password upfront
 sudo -v
 
 # Keep-alive: update existing `sudo` time stamp until we're finished
-
 while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
-# Close any open System Preferences panes, to prevent them from overriding
-# settings we’re about to change
+# Close any open System Preferences panes, to prevent them from 
+# overriding settings we’re about to change
 osascript -e 'tell application "System Preferences" to quit'
 
 
-# General UI/UX
+# Configure name
 ###############################################################################
+
+echo "What’s my name?"
+read COMPUTERNAME
 
 # Set computer name
 sudo scutil --set ComputerName "$COMPUTERNAME"
 sudo scutil --set HostName "$COMPUTERNAME"
 sudo scutil --set LocalHostName "$COMPUTERNAME"
 sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "$COMPUTERNAME"
+
+
+# General UI/UX
+###############################################################################
 
 # Set sidebar icon size to small
 defaults write NSGlobalDomain NSTableViewDefaultSizeMode -int 1
@@ -251,7 +252,7 @@ tell application "Terminal"
     (* Open the custom theme so that it gets added to the list
        of available terminal themes (note: this will open two
        additional terminal windows). *)
-    do shell script "open '$DOTFILES/settings/" & themeName & ".terminal'"
+    do shell script "open '$DOTFILES/macOS/" & themeName & ".terminal'"
     (* Wait a little bit to ensure that the custom theme is added. *)
     delay 1
     (* Set the custom theme as the default terminal theme. *)

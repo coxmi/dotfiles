@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+# print each PATH entry on a separate line
+
+echo -e ${PATH//:/\\n}

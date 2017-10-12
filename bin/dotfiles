@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+
+BIN_NAME=$(basename "$0")
+COMMAND_NAME=$1
+SUB_COMMAND_NAME=$2
+
+
+# command help
+
+	sub_help() {
+	  echo "Usage: $BIN_NAME <command>"
+	  echo
+	  echo "Commands:"
+	  echo "-  symlink    Symlinks any \${folder}/*.symlink files to ~"
+	}
+
+
+# command symlink
+
+	link_file() {
+		if [ -e "$2" ]; then
+			if [ "$(readlink "$2")" = "$1" ]; then
+				message success "skipped $1"
+				return 0
+			else
+				mv "$2" "$2.backup"
+				message success "moved $2 to $2.backup"
+			fi
+		fi
+		ln -sf "$1" "$2"
+		message success "linked $1 to $2"
+	}
+
+	sub_symlink() {
+
+		message info "installing dotfiles (*.symlinks)"
+
+		for src in $(find -H "$DOTFILES" -maxdepth 2 -name '.*' ! -path $DOTFILES ! -path '*.git' ! -name '*.DS_Store'); do
+			dest="$HOME/$(basename $src)"
+			link_file "$src" "$dest"
+	  	done
+	}
+
+
+# run
+
+	case $COMMAND_NAME in
+		"" | "-h" | "--help")
+	    	sub_help
+	    	;;
+	  	*)
+	    	shift
+	    	sub_${COMMAND_NAME} "$@"
+	    	if [ $? = 127 ]; then
+	      		echo "'$COMMAND_NAME' is not a known command or has errors." >&2
+	      		sub_help
+	      		exit 1
+	    	fi
+	    	;;
+	esac

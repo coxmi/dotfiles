@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+if test "$(uname)" != "Darwin"; then
+	exit 0
+fi
+
+# mac trash
+
+alias deletetrash='sudo rm -rf ~/.Trash/*'
+alias emptytrash='deletetrash'
+
+alias edit='subl'

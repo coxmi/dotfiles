@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+# enable colour output
+export CLICOLOR=1
+export LSCOLORS=ExFxBxDxCxegedabagacad
+
+# Case-insensitive globbing (used in pathname expansion)
+shopt -s nocaseglob
+
+# Autocorrect typos in path names when using `cd`
+shopt -s cdspell
+
+# Enable exclude in glob, e.g. ls !(folder)
+shopt -s extglob
+
+# Highlight section titles in man pages
+export LESS_TERMCAP_md="${yellow}"
+
+# Do not autocomplete when accidentally pressing Tab on an empty line.
+shopt -s no_empty_cmd_completion
+

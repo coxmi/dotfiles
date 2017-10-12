@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+
+BIN_NAME=$(basename "$0")
+COMMAND_NAME=$1
+SUB_COMMAND_NAME=$2
+
+# dotfiles help
+
+sub_help() {
+    echo "Usage: $BIN_NAME <type> <message>"
+    echo
+    echo "Types:"
+    echo "-  info"
+    echo "-  success"
+    echo "-  fail"
+}
+
+
+# messages
+
+sub_info() {
+    printf "\r  [ \033[00;34m..\033[0m ] $1\n"
+}
+
+sub_success() {
+    printf "\r\033[2K  [ \033[00;32mOK\033[0m ] $1\n"
+}
+
+sub_fail() {
+    printf "\r\033[2K  [\033[0;31mFAIL\033[0m] $1\n" && echo && exit
+}
+
+
+# run command
+
+case $COMMAND_NAME in
+    "" | "-h" | "--help")
+        sub_help
+        ;;
+    *)
+        shift
+        sub_${COMMAND_NAME} "$@"
+        if [ $? = 127 ]; then
+            echo "'$COMMAND_NAME' is not a known command or has errors." >&2
+            sub_help
+            exit 1
+        fi
+        ;;
+esac
