@@ -30,3 +30,5 @@
 - BTT settings install, add license, and remove from menu bar
 - Set desktop image
 - Install CC and configure folder location to ~/Documents
+- Dropbox
+- Login preferences
