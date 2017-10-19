@@ -23,3 +23,5 @@
         echo -e "# edit dotfiles in ~/.dotfiles \nsource ~/.bash_profile" >> ~/.bashrc
     fi
 
+    dotfiles install
+

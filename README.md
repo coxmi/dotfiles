@@ -23,3 +23,10 @@
   This is so you can keep all of those versioned in your dotfiles
   but still keep those autoloaded files in your home directory. These get
   symlinked in when you run `dotfiles symlink`.
+
+
+# Manual config
+
+- BTT settings install, add license, and remove from menu bar
+- Set desktop image
+- Install CC and configure folder location to ~/Documents

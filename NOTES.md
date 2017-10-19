@@ -49,14 +49,6 @@ Add a curl remote-install | bash
 			git config
 
 
-	# manual
-
-		BTT settings install
-		Turn off password login
-		Desktop image?
-
-
-
 ## git
 
 setup global gitignore:

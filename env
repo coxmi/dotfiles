@@ -8,7 +8,7 @@ export DOTFILES="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 export PATH="$DOTFILES/bin:$PATH"
 
-# Load shell env — source all ${folder}/{alias,functions,path,profile,prompt} files
+# Load shell env — source all ${folder}/{alias,functions,path,profile,prompt} files, excluding /bin
 
 shopt -s extglob; # allows extended glob, e.g. !(bin)
 

@@ -11,11 +11,22 @@ SUB_COMMAND_NAME=$2
 	  echo "Usage: $BIN_NAME <command>"
 	  echo
 	  echo "Commands:"
-	  echo "-  symlink    Symlinks any \${folder}/*.symlink files to ~"
+	  echo "-  install    Copies any \${folder}/*.symlink files to ~ if they don’t already exist"
+	  echo "-  brew       Installs brew apps"
+	  echo "-  macOS      Configure a fresh mac install"
 	}
 
 
-# command symlink
+# command install
+
+	copy_file() {
+		if ! [ -e "$2" ]; then
+			cp "$1" "$2"
+			message success "copied $1 to $2"
+		else
+			message info "file $2 already exists"
+		fi
+	}
 
 	link_file() {
 		if [ -e "$2" ]; then
@@ -31,14 +42,28 @@ SUB_COMMAND_NAME=$2
 		message success "linked $1 to $2"
 	}
 
-	sub_symlink() {
+	sub_install() {
 
 		message info "installing dotfiles (*.symlinks)"
 
 		for src in $(find -H "$DOTFILES" -maxdepth 2 -name '.*' ! -path $DOTFILES ! -path '*.git' ! -name '*.DS_Store'); do
 			dest="$HOME/$(basename $src)"
-			link_file "$src" "$dest"
+			copy_file "$src" "$dest"
 	  	done
+	}
+
+
+# command brew
+
+	sub_brew() {
+		bash $DOTFILES/brew/install
+	}
+
+
+# command macOS
+
+	sub_macOS() {
+		bash $DOTFILES/macOS/macOS
 	}
 
 
