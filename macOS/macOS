@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
 
+# check if macOS is running
+
 if test "$(uname)" != "Darwin"; then
-    echo "OS must be macOS"
+    message fail "OS must be macOS"
     exit 0
 fi
-
 
 # Ask for the administrator password upfront
 sudo -v
@@ -29,6 +30,7 @@ sudo scutil --set HostName "$COMPUTERNAME"
 sudo scutil --set LocalHostName "$COMPUTERNAME"
 sudo defaults write /Library/Preferences/SystemConfiguration/com.apple.smb.server NetBIOSName -string "$COMPUTERNAME"
 
+message success "Configured name"
 
 # General UI/UX
 ###############################################################################
@@ -68,6 +70,8 @@ defaults write com.apple.menuextra.clock DateFormat -string 'EEE d MMM  h:mm a'
 # Set Dark theme
 defaults write NSGlobalDomain AppleInterfaceStyle -string "Dark"
 
+message success "General UI/UX"
+
 
 # Trackpad, mouse, keyboard, Bluetooth accessories, and input
 ###############################################################################
@@ -92,6 +96,8 @@ defaults write NSGlobalDomain ApplePressAndHoldEnabled -bool false
 # Set a blazingly fast keyboard repeat rate
 defaults write NSGlobalDomain KeyRepeat -int 2
 defaults write NSGlobalDomain InitialKeyRepeat -int 35
+
+message success "Trackpad, mouse, keyboard, Bluetooth accessories, and input"
 
 
 # Finder
@@ -160,8 +166,9 @@ defaults write com.apple.finder FXInfoPanesExpanded -dict \
 	OpenWith -bool true \
 	Privileges -bool true
 
+message success "Finder"
 
-# Dock, Dashboard, and hot corners
+# Dock and Dashboard
 ###############################################################################
 
 # Wipe all (default) app icons from the Dock
@@ -180,6 +187,8 @@ defaults write com.apple.dock mru-spaces -bool false
 
 # Automatically hide and show the Dock
 defaults write com.apple.dock autohide -bool true
+
+message success "Dock and Dashboard"
 
 
 # Safari & WebKit
@@ -217,6 +226,8 @@ defaults write com.apple.Safari WarnAboutFraudulentWebsites -bool true
 # Enable “Do Not Track”
 defaults write com.apple.Safari SendDoNotTrackHTTPHeader -bool true
 
+message success "Safari & WebKit"
+
 
 # Mail
 ###############################################################################
@@ -231,12 +242,157 @@ defaults write com.apple.mail NSUserKeyEquivalents -dict-add "Send" "@\U21a9"
 # Enable classic mode
 defaults write com.apple.mail RichMessageList -bool false
 
+message success "Mail"
+
+
+# Time Machine
+###############################################################################
+
+# Prevent Time Machine from prompting to use new hard drives as backup volume
+defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool true
+
+# Disable local Time Machine backups
+hash tmutil &> /dev/null && sudo tmutil disablelocal
+
+message success "Time Machine"
+
+
+
+# Activity Monitor
+###############################################################################
+
+# Show all processes in Activity Monitor
+defaults write com.apple.ActivityMonitor ShowCategory -int 0
+
+# Sort Activity Monitor results by CPU usage
+defaults write com.apple.ActivityMonitor SortColumn -string "CPUUsage"
+defaults write com.apple.ActivityMonitor SortDirection -int 0
+
+message success "Activity Monitor"
+
+
+# TextEdit
+###############################################################################
+
+# Use plain text mode for new TextEdit documents
+defaults write com.apple.TextEdit RichText -int 0
+
+# Open and save files as UTF-8 in TextEdit
+defaults write com.apple.TextEdit PlainTextEncoding -int 4
+defaults write com.apple.TextEdit PlainTextEncodingForWrite -int 4
+
+message success "TextEdit"
+
+# Disk Utility
+###############################################################################
+
+# Enable the debug menu in Disk Utility
+defaults write com.apple.DiskUtility DUDebugMenuEnabled -bool true
+defaults write com.apple.DiskUtility advanced-image-options -bool true
+
+message success "Disk Utility"
+
+
+# App Store
+###############################################################################
+
+# Enable the WebKit Developer Tools in the App Store
+defaults write com.apple.appstore WebKitDeveloperExtras -bool true
+
+# Enable Debug Menu in the App Store
+defaults write com.apple.appstore ShowDebugMenu -bool true
+
+# Enable the automatic update check
+defaults write com.apple.SoftwareUpdate AutomaticCheckEnabled -bool true
+
+# Download newly available updates in background
+defaults write com.apple.SoftwareUpdate AutomaticDownload -int 1
+
+# Install System data files & security updates
+defaults write com.apple.SoftwareUpdate CriticalUpdateInstall -int 1
+
+# Turn on app auto-update
+defaults write com.apple.commerce AutoUpdate -bool true
+
+message success "App Store"
+
+
+# Photos
+###############################################################################
+
+# Prevent Photos from opening automatically when devices are plugged in
+defaults -currentHost write com.apple.ImageCapture disableHotPlug -bool true
+
+message success "Photos"
+
+
+# Messages
+###############################################################################
+
+# Disable automatic emoji substitution (i.e. use plain text smileys)
+defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "automaticEmojiSubstitutionEnablediMessage" -bool false
+
+message success "Messages"
+
+
+# Google Chrome
+###############################################################################
+
+# Disable the all too sensitive backswipe on trackpads
+defaults write com.google.Chrome AppleEnableSwipeNavigateWithScrolls -bool false
+defaults write com.google.Chrome.canary AppleEnableSwipeNavigateWithScrolls -bool false
+
+# Disable the all too sensitive backswipe on Magic Mouse
+defaults write com.google.Chrome AppleEnableMouseSwipeNavigateWithScrolls -bool false
+defaults write com.google.Chrome.canary AppleEnableMouseSwipeNavigateWithScrolls -bool false
+
+message success "Google Chrome"
+
+
+# Transmission
+###############################################################################
+
+# Use `~/Downloads` to store complete downloads
+defaults write org.m0k.transmission DownloadChoice -string "Constant"
+defaults write org.m0k.transmission DownloadFolder -string "$HOME/Downloads";
+
+# Use `~/Downloads/.torrents` to store incomplete downloads
+defaults write org.m0k.transmission UseIncompleteDownloadFolder -bool true
+defaults write org.m0k.transmission IncompleteDownloadFolder -string "$HOME/Downloads/.torrents"
+
+# Don’t prompt for confirmation before downloading
+defaults write org.m0k.transmission DownloadAsk -bool false
+
+# Trash original torrent files
+defaults write org.m0k.transmission DeleteOriginalTorrent -bool true
+
+# Hide the donate message
+defaults write org.m0k.transmission WarningDonate -bool false
+
+# Hide the legal disclaimer
+defaults write org.m0k.transmission WarningLegal -bool false
+
+
+# Hide annoying ~/folders
+
+chflags hidden ~/Applications/
+chflags hidden ~/Documents/
+chflags hidden ~/Movies/
+chflags hidden ~/Music/
+chflags hidden ~/Pictures/
+chflags hidden ~/Public/
+
+message success "Transmission"
+
+
 
 # Terminal 
 ###############################################################################
 
 # Only use UTF-8 in Terminal.app
 defaults write com.apple.terminal StringEncodings -array 4
+
+message info "Installing custom Terminal theme…"
 
 
 # Use Custom.terminal theme
@@ -274,132 +430,16 @@ tell application "Terminal"
 end tell
 EOD
     
-
 # Disable the annoying line marks
 defaults write com.apple.Terminal ShowLineMarks -int 0
 
-
-# Time Machine
-###############################################################################
-
-# Prevent Time Machine from prompting to use new hard drives as backup volume
-defaults write com.apple.TimeMachine DoNotOfferNewDisksForBackup -bool true
-
-# Disable local Time Machine backups
-hash tmutil &> /dev/null && sudo tmutil disablelocal
-
-
-
-# Activity Monitor
-###############################################################################
-
-# Show all processes in Activity Monitor
-defaults write com.apple.ActivityMonitor ShowCategory -int 0
-
-# Sort Activity Monitor results by CPU usage
-defaults write com.apple.ActivityMonitor SortColumn -string "CPUUsage"
-defaults write com.apple.ActivityMonitor SortDirection -int 0
-
-
-# TextEdit and Disk Utility
-###############################################################################
-
-# Use plain text mode for new TextEdit documents
-defaults write com.apple.TextEdit RichText -int 0
-
-# Open and save files as UTF-8 in TextEdit
-defaults write com.apple.TextEdit PlainTextEncoding -int 4
-defaults write com.apple.TextEdit PlainTextEncodingForWrite -int 4
-
-# Enable the debug menu in Disk Utility
-defaults write com.apple.DiskUtility DUDebugMenuEnabled -bool true
-defaults write com.apple.DiskUtility advanced-image-options -bool true
-
-
-# Mac App Store
-###############################################################################
-
-# Enable the WebKit Developer Tools in the Mac App Store
-defaults write com.apple.appstore WebKitDeveloperExtras -bool true
-
-# Enable Debug Menu in the Mac App Store
-defaults write com.apple.appstore ShowDebugMenu -bool true
-
-# Enable the automatic update check
-defaults write com.apple.SoftwareUpdate AutomaticCheckEnabled -bool true
-
-# Download newly available updates in background
-defaults write com.apple.SoftwareUpdate AutomaticDownload -int 1
-
-# Install System data files & security updates
-defaults write com.apple.SoftwareUpdate CriticalUpdateInstall -int 1
-
-# Turn on app auto-update
-defaults write com.apple.commerce AutoUpdate -bool true
-
-
-# Photos
-###############################################################################
-
-# Prevent Photos from opening automatically when devices are plugged in
-defaults -currentHost write com.apple.ImageCapture disableHotPlug -bool true
-
-
-# Messages
-###############################################################################
-
-# Disable automatic emoji substitution (i.e. use plain text smileys)
-defaults write com.apple.messageshelper.MessageController SOInputLineSettings -dict-add "automaticEmojiSubstitutionEnablediMessage" -bool false
-
-
-# Google Chrome & Google Chrome Canary
-###############################################################################
-
-# Disable the all too sensitive backswipe on trackpads
-defaults write com.google.Chrome AppleEnableSwipeNavigateWithScrolls -bool false
-defaults write com.google.Chrome.canary AppleEnableSwipeNavigateWithScrolls -bool false
-
-# Disable the all too sensitive backswipe on Magic Mouse
-defaults write com.google.Chrome AppleEnableMouseSwipeNavigateWithScrolls -bool false
-defaults write com.google.Chrome.canary AppleEnableMouseSwipeNavigateWithScrolls -bool false
-
-
-# Transmission
-###############################################################################
-
-# Use `~/Downloads` to store complete downloads
-defaults write org.m0k.transmission DownloadChoice -string "Constant"
-defaults write org.m0k.transmission DownloadFolder -string "$HOME/Downloads";
-
-# Use `~/Downloads/.torrents` to store incomplete downloads
-defaults write org.m0k.transmission UseIncompleteDownloadFolder -bool true
-defaults write org.m0k.transmission IncompleteDownloadFolder -string "$HOME/Downloads/.torrents"
-
-# Don’t prompt for confirmation before downloading
-defaults write org.m0k.transmission DownloadAsk -bool false
-
-# Trash original torrent files
-defaults write org.m0k.transmission DeleteOriginalTorrent -bool true
-
-# Hide the donate message
-defaults write org.m0k.transmission WarningDonate -bool false
-
-# Hide the legal disclaimer
-defaults write org.m0k.transmission WarningLegal -bool false
-
-
-# Hide annoying ~/folders
-
-chflags hidden ~/Applications/
-chflags hidden ~/Documents/
-chflags hidden ~/Movies/
-chflags hidden ~/Music/
-chflags hidden ~/Pictures/
-chflags hidden ~/Public/
+message success "Terminal"
 
 
 # Kill affected applications
 ###############################################################################
+
+message info "Killing affected applications…"
 
 for app in "Activity Monitor" \
 	"Calendar" \
@@ -410,8 +450,9 @@ for app in "Activity Monitor" \
 	"Photos" \
 	"Safari" \
 	"SystemUIServer" \
-	"Terminal" \
     "Google Chrome" \
     "Transmission"; do
 	killall "${app}" &> /dev/null
 done
+
+message success "Done! Please reboot your machine now."

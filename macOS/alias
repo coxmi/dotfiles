@@ -4,9 +4,11 @@ if test "$(uname)" != "Darwin"; then
 	exit 0
 fi
 
-# mac trash
+# trash
 
 alias deletetrash='sudo rm -rf ~/.Trash/*'
 alias emptytrash='deletetrash'
+
+# editor
 
 alias edit='subl'

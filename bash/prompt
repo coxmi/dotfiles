@@ -3,8 +3,8 @@
 # set colours
 
 	if tput setaf 1 &> /dev/null; then
-		bold=$(tput bold)
 		reset=$(tput sgr0)
+		bold=$(tput bold)
 		black=$(tput setaf 0)
 		blue=$(tput setaf 33)
 		cyan=$(tput setaf 37)

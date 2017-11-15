@@ -8,16 +8,17 @@ SUB_COMMAND_NAME=$2
 # command help
 
 	sub_help() {
-	  echo "Usage: $BIN_NAME <command>"
-	  echo
-	  echo "Commands:"
-	  echo "-  install    Copies any \${folder}/*.symlink files to ~ if they don’t already exist"
-	  echo "-  brew       Installs brew apps"
-	  echo "-  macOS      Configure a fresh mac install"
+		echo "Usage: $BIN_NAME <command>"
+		echo
+		echo "Commands:"
+		echo "-  files     Copies dotfiles (\${folder}/.*) to ~ if they don’t already exist"
+		echo "-  install   Runs all installers (\${folder}/install)"
+		echo "-  macOS     Apply macOS system defaults (requires reboot)"
+		echo "-  help      This help message"
 	}
 
 
-# command install
+# command: files
 
 	copy_file() {
 		if ! [ -e "$2" ]; then
@@ -42,25 +43,30 @@ SUB_COMMAND_NAME=$2
 		message success "linked $1 to $2"
 	}
 
-	sub_install() {
+	sub_files() {
 
-		message info "installing dotfiles (*.symlinks)"
+		message info "copying dotfiles (~/dotfiles/\${folder}/.*) to ~"
 
-		for src in $(find -H "$DOTFILES" -maxdepth 2 -name '.*' ! -path $DOTFILES ! -path '*.git' ! -name '*.DS_Store'); do
+		for src in $(find -H "$DOTFILES" -mindepth 2 -maxdepth 2 -name '.*' ! -name '*.DS_Store'); do
 			dest="$HOME/$(basename $src)"
 			copy_file "$src" "$dest"
 	  	done
 	}
 
 
-# command brew
+# command: install
 
-	sub_brew() {
-		bash $DOTFILES/brew/install
+	sub_install() {
+
+		message info "running all installers (~/dotfiles/\${folder}/install)…"
+
+		for installer in $(find -H "$DOTFILES" -mindepth 2 -maxdepth 2 -name 'install'); do
+			bash $installer
+	  	done
 	}
 
 
-# command macOS
+# command: macOS
 
 	sub_macOS() {
 		bash $DOTFILES/macOS/macOS
@@ -74,12 +80,11 @@ SUB_COMMAND_NAME=$2
 	    	sub_help
 	    	;;
 	  	*)
-	    	shift
-	    	sub_${COMMAND_NAME} "$@"
-	    	if [ $? = 127 ]; then
-	      		echo "'$COMMAND_NAME' is not a known command or has errors." >&2
-	      		sub_help
-	      		exit 1
-	    	fi
+			shift
+			if typeset -f "sub_${COMMAND_NAME}" > /dev/null; then
+				sub_${COMMAND_NAME} "$@"
+			else
+				message fail "command '$COMMAND_NAME' is not a known command. try '$BIN_NAME help'." >&2
+			fi
 	    	;;
 	esac

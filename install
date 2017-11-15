@@ -1,27 +1,27 @@
 #!/usr/bin/env bash
 
-# variables
+# dotfiles location 
 
-    DOTFILES=~/.dotfiles  
+    export DOTFILES="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-# Ask for the administrator password upfront
-
-    echo "Installing dotfiles at $HOME/.dotfiles"
+    echo "Installing dotfiles at $DOTFILES"
 
     mkdir -p $DOTFILES && cd $DOTFILES 
 
-    touch ~/.bash_profile
+# source shell env inside .bash_profile and .bashrc
 
-    if ! grep -Fq "source ~/.dotfiles/env" ~/.bash_profile ; then
-        echo -e "# edit dotfiles in ~/.dotfiles \nsource ~/.dotfiles/env" >> ~/.bash_profile
-        source ~/.bash_profile
+    touch ~/.bash_profile && touch ~/.bashrc
+
+    if ! grep -Fq "source $DOTFILES/env" ~/.bash_profile ; then
+        echo -e "# edit dotfiles in $DOTFILES \nsource $DOTFILES/env" >> ~/.bash_profile
+    fi    
+
+    if ! grep -Fq "source ~/.bash_profile" ~/.bashrc ; then
+        echo -e "# edit dotfiles in $DOTFILES \nsource ~/.bash_profile" >> ~/.bashrc
     fi
 
-    touch ~/.bashrc
+# source shell env, and run help command
 
-    if ! grep -Fq "source ~/.bash_profile" ~/.bash_profile ; then
-        echo -e "# edit dotfiles in ~/.dotfiles \nsource ~/.bash_profile" >> ~/.bashrc
-    fi
+    source $DOTFILES/env
 
-    dotfiles install
-
+    dotfiles help

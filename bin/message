@@ -16,18 +16,29 @@ sub_help() {
 }
 
 
+# colours
+
+if tput setaf 1 &> /dev/null; then
+    reset=$(tput sgr0)
+    cyan=$(tput setaf 37)
+    orange=$(tput setaf 166)
+    orange=$(tput setaf 156)
+    purple=$(tput setaf 125)
+fi
+
+
 # messages
 
 sub_info() {
-    printf "\r  [ \033[00;34m..\033[0m ] $1\n"
+    printf "\r  [ ${cyan}•${reset} ] $1\n"
 }
 
 sub_success() {
-    printf "\r\033[2K  [ \033[00;32mOK\033[0m ] $1\n"
+    printf "\r  [ ${orange}✓${reset} ] $1\n"
 }
 
 sub_fail() {
-    printf "\r\033[2K  [\033[0;31mFAIL\033[0m] $1\n" && echo && exit
+    printf "\r  [ ${purple}!${reset} ] $1\n" && exit
 }
 
 
@@ -39,11 +50,11 @@ case $COMMAND_NAME in
         ;;
     *)
         shift
-        sub_${COMMAND_NAME} "$@"
-        if [ $? = 127 ]; then
-            echo "'$COMMAND_NAME' is not a known command or has errors." >&2
-            sub_help
-            exit 1
+        if typeset -f "sub_${COMMAND_NAME}" > /dev/null; then
+            sub_${COMMAND_NAME} "$@"
+        else
+            message fail "command '$COMMAND_NAME' is not a known command. try '$BIN_NAME help'." >&2
         fi
         ;;
+
 esac

@@ -1,34 +1,38 @@
+# Dotfiles 
 
-# Install
 
-### On a fresh installation of macOS:
+## Install
+
+On a fresh installation of macOS:
 
     sudo softwareupdate -i -a
     xcode-select --install
 
-    mkdir ~/.dotfiles && cd ~/.dotfiles
-    git clone https://github.com/michaeland/dotfiles.git .
-    ./install
-    dotfiles symlink
+Install the dotfiles with git:
+
+    git clone https://github.com/michaeland/dotfiles.git ~/.dotfiles
+    source ~/.dotfiles/install
+
+Or alternatively, install into `~/.dotfiles` with curl:
+
+    curl -fsSL https://raw.githubusercontent.com/michaeland/dotfiles/master/install | bash
 
 
-# Conventions
+## Conventions
 
-- **bin/**: Anything in `bin/` will get added to your `$PATH` and be made
-  available everywhere.
-- **folder/{alias,exports,functions,path,env}**: Any file named `alias`, `exports`, 
-  `functions`, `path`, or `env` is loaded into the shell environment.
-- **folder/install**: Any files named `install` will be run with `dotfiles install`.
-- **folder/\.\***: Any `*.dotfiles` get symlinked into  your `$HOME`. 
-  This is so you can keep all of those versioned in your dotfiles
-  but still keep those autoloaded files in your home directory. These get
-  symlinked in when you run `dotfiles symlink`.
+- **bin/**: Anything in `bin` will get added to your `$PATH` and be made available everywhere.
+- **{folder}/{env,alias,functions,path,profile,prompt}**: Any executable file named `env`, `alias`, 
+  `functions`, `path`, `profile`, or `env` is loaded into the shell environment.
+- **{folder}/\.\***: Any `.dotfiles` get copied into `~`. These get copied when you run `dotfiles files`.
+- **{folder}/install**: Any executable named `install` will be run with `dotfiles install`.
 
 
-# Manual config
+## `dotfiles help`
 
-- BTT settings install, add license, and remove from menu bar
-- Set desktop image
-- Install CC and configure folder location to ~/Documents
-- Dropbox
-- Login preferences
+    Usage: dotfiles <command>
+
+    Commands:
+    -  files     Copies dotfiles (${folder}/.*) to ~ if they don’t already exist
+    -  install   Runs all installers (${folder}/install)
+    -  macOS     Apply macOS system defaults (requires reboot)
+    -  help      This help message

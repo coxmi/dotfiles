@@ -2,19 +2,23 @@
 
 if ! [ -d ~/.nvm ]; then
 
-	PWD = $(pwd);
+    message info "Installing nvm…"
 
     export NVM_DIR="$HOME/.nvm" && (
-        git clone https://github.com/creationix/nvm.git "$NVM_DIR"
+        git clone https://github.com/creationix/nvm.git "$NVM_DIR" --quiet
         cd "$NVM_DIR"
-        git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" origin`
+        git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" origin` --quiet
     ) && . "$NVM_DIR/nvm.sh"
 
-    cd $PWD;
-
-    # and install node
     nvm install node
 
+    message success "Installed nvm"
+
 else
-    echo "nvm already installed, skipping…"
+    message info "nvm already installed, skipping…"
 fi;
+
+
+# done
+
+    message success "${BASH_SOURCE[0]} completed"
