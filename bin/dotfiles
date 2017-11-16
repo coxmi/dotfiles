@@ -47,7 +47,7 @@ SUB_COMMAND_NAME=$2
 
 		message info "copying dotfiles (~/dotfiles/\${folder}/.*) to ~"
 
-		for src in $(find -H "$DOTFILES" -mindepth 2 -maxdepth 2 ! -path '*/.git/*' ! -name '*.DS_Store'); do
+		for src in $(find -H "$DOTFILES" -mindepth 2 -maxdepth 2 -name '.*' ! -path '*/.git/*' ! -name '*.DS_Store'); do
 			dest="$HOME/$(basename $src)"
 			copy_file "$src" "$dest"
 	  	done
