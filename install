@@ -24,4 +24,7 @@
 
     source $DOTFILES/env
 
+    dotfiles files
     dotfiles help
+
+    source ~/.bash_profile

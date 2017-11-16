@@ -10,12 +10,11 @@ On a fresh installation of macOS:
 
 Install the dotfiles with git:
 
-    git clone https://github.com/michaeland/dotfiles.git ~/.dotfiles
-    source ~/.dotfiles/install
+    git clone https://github.com/michaeland/dotfiles.git ~/.dotfiles && source ~/.dotfiles/install
 
 Or alternatively, install into `~/.dotfiles` with curl:
 
-    curl -fsSL https://raw.githubusercontent.com/michaeland/dotfiles/master/install | bash
+    curl -fsSL https://raw.githubusercontent.com/michaeland/dotfiles/master/install-remote | bash
 
 
 ## Conventions
@@ -27,7 +26,7 @@ Or alternatively, install into `~/.dotfiles` with curl:
 - **{folder}/install**: Any executable named `install` will be run with `dotfiles install`.
 
 
-## `dotfiles help`
+## dotfiles help command
 
     Usage: dotfiles <command>
 

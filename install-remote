@@ -12,5 +12,5 @@ else
   echo "Installing dotfiles respository"
   mkdir -p "$HOME/.dotfiles" && \
   eval "$CMD https://github.com/michaeland/dotfiles/tarball/master | tar -xzv -C ~/.dotfiles --strip-components=1"
-  . "$HOME/.dotfiles/install"
+  source $HOME/.dotfiles/install
 fi
