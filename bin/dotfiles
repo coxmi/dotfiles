@@ -14,6 +14,7 @@ SUB_COMMAND_NAME=$2
 		echo "-  files     Copies dotfiles (\${folder}/.*) to ~ if they don’t already exist"
 		echo "-  install   Runs all installers (\${folder}/install)"
 		echo "-  macOS     Apply macOS system defaults (requires reboot)"
+		echo "-  dock      Empty dock on macOS"
 		echo "-  help      This help message"
 	}
 
@@ -70,6 +71,14 @@ SUB_COMMAND_NAME=$2
 
 	sub_macOS() {
 		bash $DOTFILES/macOS/macOS
+	}
+
+
+# command: dock
+
+	sub_dock() {
+		# Wipe all (default) app icons from the Dock
+		defaults write com.apple.dock persistent-apps -array
 	}
 
 

@@ -79,7 +79,7 @@
 
     fonts=(
       font-source-code-pro
-      font-fira-code
+      font-ibm-plex
     )
     brew cask install ${fonts[@]}
 

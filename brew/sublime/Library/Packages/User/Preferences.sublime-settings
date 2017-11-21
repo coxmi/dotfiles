@@ -33,16 +33,17 @@
 		"CVS",
 		"node_modules",
 		"wp-includes",
-		"wp-admin"
+		"wp-admin",
+		".phpintel"
 	],
-	"font_face": "Source Code Pro",
-	"font_size": 14,
+	"font_face": "IBM Plex Mono",
+	"font_size": 13,
 	"ignore_vcs_packages": true,
 	"ignored_packages":
 	[
 		"Vintage"
 	],
-	"line_padding_bottom": 2,
+	"line_padding_bottom": 3,
 	"line_padding_top": 3,
 	"margin": 4,
 	"open_files_in_new_window": false,
