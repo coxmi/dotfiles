@@ -1,5 +1,16 @@
 #!/usr/bin/env bash
 
 # add tab completion for SSH hostnames based on ~/.ssh/config, ignoring wildcards
-[ -e "$HOME/.ssh/config" ] && complete -o "default" -o "nospace" -W "$(grep "^Host" ~/.ssh/config | grep -v "[?*]" | cut -d " " -f2- | tr ' ' '\n')" scp sftp ssh;
+
+if [ -e "$HOME/.ssh/config" ]; then
+	complete -o "default" -o "nospace" -W "$(grep "^Host" ~/.ssh/config | grep -v "[?*]" | cut -d " " -f 2 | tr ' ' '\n')" scp sftp ssh;
+fi
+
+# add tab completion for Included SSH hostnames based on ~/.ssh/config, ignoring wildcards
+
+SSH_INCLUDES=($(grep "^Include" ~/.ssh/config | cut -d " " -f 2));
+
+if [ $SSH_INCLUDES ]; then
+	complete -o "default" -o "nospace" -W "$(eval grep -hs "^Host" "${SSH_INCLUDES[@]}" | grep -v "[?*]" | cut -d " " -f 2 | tr ' ' '\n')" scp sftp ssh;
+fi
 
