@@ -3,5 +3,5 @@
 # URL-encode strings
 
   for a in "$@"; do
-    echo $(php -r "echo urlencode('$a');")
+    php -r "echo urlencode('$a');"
   done
