@@ -19,11 +19,11 @@ Or alternatively with curl:
 
 ## Conventions
 
-- `**bin/**`: Anything in `bin` will get added to your `$PATH` and be made available everywhere.
-- `**{folder}/{env,alias,functions,path,profile,prompt}**`: Any executable file named `env`, `alias`, 
+- **`bin/*`**: Anything in `bin` will get added to your `$PATH` and be made available everywhere.
+- **`{folder}/{env,alias,functions,path,profile,prompt}`**: Any executable file named `env`, `alias`, 
   `functions`, `path`, `profile`, or `env` is loaded into the shell environment.
-- `**{folder}/\.\***`: Any `.dotfiles` get copied into `~`. These get copied when you run `dotfiles files`.
-- `**{folder}/install**`: Any executable named `install` will be run with `dotfiles install`.
+- **`{folder}/.*`**: Any `.dotfiles` get copied into `~`. These get copied when you run `dotfiles files`.
+- **`{folder}/install`**: Any executable named `install` will be run with `dotfiles install`.
 
 
 ## dotfiles help command
