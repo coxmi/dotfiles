@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+# usage: replaceinfile find replace file
+
+function unregex {
+   # http://stackoverflow.com/a/2705678/120999
+   sed -e 's/[]\/()$*.^|[]/\\&/g' <<< "$1"
+}
+
+find=$(unregex "$1")
+replace=$(unregex "$2")
+
+shift 2
+
+sed -i '' "s/$find/$replace/g" "$@"
+
+
+

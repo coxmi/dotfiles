@@ -24,6 +24,8 @@ Or alternatively with curl:
   `functions`, `path`, `profile`, or `env` is loaded into the shell environment.
 - **`{folder}/.*`**: Any `.dotfiles` get copied into `~`. These get copied when you run `dotfiles files`.
 - **`{folder}/install`**: Any executable named `install` will be run with `dotfiles install`.
+- **`{folder}/preinstall`**: Any executable named `preinstall` will be run with `dotfiles install` before any `install` scripts.
+- **`{folder}/postinstall`**: Any executable named `postinstall` will be run with `dotfiles install` after any `install` scripts.
 
 
 ## dotfiles help command

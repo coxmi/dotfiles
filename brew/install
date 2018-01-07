@@ -7,33 +7,6 @@
         exit 0
     fi
 
-# Install homebrew
-
-    if ! [ -x "$(command -v brew)" ]; then
-        # Homebrew is missing, install it
-        message info "Installing brew"
-        ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-    else
-        message info "brew is already installed, skipping…"
-    fi;
-
-    message info "brew updating…"
-
-    brew update --quiet
-    brew upgrade --quiet
-
-
-
-# Install utilities
-
-    message info "Installing brew utilities…"
-
-    brew install coreutils --quiet
-    brew install yarn --without-node --quiet
-
-    brew tap caskroom/cask --quiet
-    brew tap caskroom/fonts --quiet
-
 
 # Install apps
 

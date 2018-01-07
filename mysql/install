@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+# bash "strict mode"
+set -eu
+
+# install
+brew install mysql
+
+# permission issue on macOS Sierra
+sudo chown -R $USER: ~/Library/LaunchAgents
+
+# start on boot
+ln -sfv /usr/local/opt/mysql/*.plist ~/Library/LaunchAgents
+launchctl load ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist
+
+# if there are any issues, try to load/unload using brew services start/stop mysql
+
+# opens mysql_secure_installation in a new terminal window
+osascript -e 'tell application "Terminal" to do script "mysql_secure_installation"'

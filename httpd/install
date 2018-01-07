@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+
+# bash "strict mode"
+set -eu
+
+# stop/remove previous apache builds
+
+    (
+        # built-in apache
+        sudo apachectl stop
+        sudo launchctl unload -w /System/Library/LaunchDaemons/org.apache.httpd.plist 2>/dev/null
+        # brew-installed apache
+        sudo brew services stop httpd
+        brew uninstall httpd
+        sudo rm -rf /usr/local/etc/httpd
+
+    ) > /dev/null 2>&1
+
+# install
+
+    brew install httpd
+
+    # start on :8080
+    sudo brew services start httpd
+
+# configure
+
+    apacheconf=/usr/local/etc/httpd/httpd.conf
+    sslconf=/usr/local/etc/httpd/extra/httpd-ssl.conf
+
+    # listen on port 80
+    sed -i '' 's/^Listen 8080/Listen 80/' $apacheconf
+
+    # move document root
+    sed -i '' "s|^DocumentRoot \"/usr/local/var/www\"|DocumentRoot \"$HOME/Projects/localhost\"|g" $apacheconf
+    sed -i '' "s|^<Directory \"/usr/local/var/www\">|<Directory "$HOME/Projects">|g" $apacheconf
+
+    # set ServerName
+    sed -i '' 's/^#ServerName.*/ServerName localhost/g' $apacheconf
+
+    # allow .htaccess
+    sed -i '' 's/AllowOverride.*None/AllowOverride All/g' $apacheconf
+
+    # change user and group
+    sed -i '' "s/^User.*/User $(whoami)/" $apacheconf
+    sed -i '' "s/^Group.*/Group staff/" $apacheconf
+
+    # enable httpd-vhosts.conf
+    sed -i '' 's|^#Include /usr/local/etc/httpd/extra/httpd-vhosts.conf.*|Include /usr/local/etc/httpd/extra/httpd-vhosts.conf|g' $apacheconf
+
+    #enable mod_rewrite
+    sed -i '' 's|^#LoadModule rewrite_module lib/httpd/modules/mod_rewrite.so.*|LoadModule rewrite_module lib/httpd/modules/mod_rewrite.so|g' $apacheconf
+
+    #enable mod_vhost_alias
+    sed -i '' 's|^#LoadModule vhost_alias_module lib/httpd/modules/mod_vhost_alias.so.*|LoadModule vhost_alias_module lib/httpd/modules/mod_vhost_alias.so|g' $apacheconf
+
+    #enable mod_http2
+    sed -i '' 's|^#LoadModule http2_module lib/httpd/modules/mod_http2.so.*|LoadModule http2_module lib/httpd/modules/mod_http2.so|g' $apacheconf
+
+    #enable ssl
+    sed -i '' 's|^#LoadModule ssl_module lib/httpd/modules/mod_ssl.so.*|LoadModule ssl_module lib/httpd/modules/mod_ssl.so|g' $apacheconf
+    sed -i '' 's|^#LoadModule socache_shmcb_module lib/httpd/modules/mod_socache_shmcb.so.*|LoadModule socache_shmcb_module lib/httpd/modules/mod_socache_shmcb.so|g' $apacheconf
+    sed -i '' 's|^#Include /usr/local/etc/httpd/extra/httpd-ssl.conf.*|Include /usr/local/etc/httpd/extra/httpd-ssl.conf|g' $apacheconf
+    
+    sed -i '' 's/^Listen 8443/Listen 443/' $sslconf
+    sed -i '' 's/<VirtualHost _default_:8443>/<VirtualHost _default_:443>/' $sslconf
+    sed -i '' "s|^DocumentRoot \"/usr/local/var/www\"|DocumentRoot \"$HOME/Projects/localhost\"|g" $sslconf
+    sed -i '' 's/^ServerName.*/ServerName localhost:443/g' $sslconf
+
+    cd /usr/local/etc/httpd
+
+    openssl req \
+    -new \
+    -newkey rsa:4096 \
+    -days 365 \
+    -nodes \
+    -x509 \
+    -subj "/C=GB/ST=localhost/L=localhost/O=localhost/CN=localhost" \
+    -keyout server.key \
+    -out server.crt
+    
+
+# restart apache
+sudo apachectl -k restart
