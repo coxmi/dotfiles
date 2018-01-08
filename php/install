@@ -7,9 +7,13 @@ set -eu
 
 	brew tap homebrew/php
 
-	brew install php72 --with-httpd
+	brew install curl --with-openssl 
+
+	brew install php72 --with-httpd --with-homebrew-curl
 
 	brew install php72-opcache php72-apcu php72-xdebug php72-yaml --build-from-source
+
+	
 
 # configure
 

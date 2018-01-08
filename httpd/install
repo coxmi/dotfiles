@@ -18,7 +18,7 @@ set -eu
 
 # install
 
-    brew install httpd
+    brew install httpd lynx
 
     # start on :8080
     sudo brew services start httpd
