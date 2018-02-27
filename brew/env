@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+
+# `youtube-dl best "url"`
+# otherwise falls back to usual youtube-dl behaviour
+
+function youtube-dl() {
+  case $* in
+    best* ) shift 1; command youtube-dl -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4' "$@" ;;
+    * ) command youtube-dl "$@" ;;
+  esac
+}

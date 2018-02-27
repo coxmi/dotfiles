@@ -48,6 +48,15 @@
     brew cask install "${ql[@]}"
 
 
+# Install utilities
+
+    utilities=(
+        youtube-dl
+    )
+
+    brew install ${utilities[@]}
+
+
 # Install fonts
 
     fonts=(

@@ -11,13 +11,13 @@
 # source shell env inside .bash_profile and .bashrc
 
     touch ~/.bash_profile && touch ~/.bashrc
-
-    if ! grep -Fq "source $DOTFILES/env" ~/.bash_profile ; then
-        echo -e "# edit dotfiles in $DOTFILES \nsource $DOTFILES/env" >> ~/.bash_profile
+ 
+    if ! grep -Fq "source ~/.bashrc" ~/.bash_profile ; then
+        echo -e "# edit dotfiles in $DOTFILES \nsource ~/.bashrc" >> ~/.bash_profile
     fi    
 
-    if ! grep -Fq "source ~/.bash_profile" ~/.bashrc ; then
-        echo -e "# edit dotfiles in $DOTFILES \nsource ~/.bash_profile" >> ~/.bashrc
+    if ! grep -Fq "source $DOTFILES/env" ~/.bashrc ; then
+        echo -e "# edit dotfiles in $DOTFILES \nsource $DOTFILES/env" >> ~/.bashrc
     fi
 
 # source shell env, and run help command
