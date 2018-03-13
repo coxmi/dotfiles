@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+
+
+# lists all ssh hosts specified in ~/.ssh/config, and any direct Include directives
+
+function ssh_list_hosts() {
+
+	local CONFIG=~/.ssh/config
+
+	if [ ! -f "$CONFIG" ]; then
+		return;
+	fi
+
+	# get references to Included ssh config files, if any
+	local sshIncludedPaths=$(grep "^Include" $CONFIG | cut -d " " -f 2)
+
+	# expand any file globs to get all first-level config files, 
+	# and redirect any fails (stderr) to /dev/null
+	local configFiles=$(eval ls $sshIncludedPaths 2>/dev/null)
+
+	# find any Host directives
+	# remove any `Host *` entries
+	# cut string on " " delimeter, list 2nd entry (without "Host" word)
+	# replace spaces with newlines
+	local sshHosts=$(
+		grep -s --ignore-case --no-filename "^Host" $configFiles \
+		| grep --invert-match "[?*]" \
+		| cut -d " " -f 2
+	);
+
+	echo $sshHosts | tr ' ' '\n'
+}
+
+
+# `ssh hosts` command
+
+function ssh() {
+  case $* in
+    hosts* ) shift 1; ssh_list_hosts "$@" ;;
+    * ) command ssh "$@" ;;
+  esac
+}
+
+
+# auto complete ssh hosts and ssh hosts command
+
+complete -o "default" -o "nospace" -W "$(ssh_list_hosts) hosts" scp sftp ssh;
