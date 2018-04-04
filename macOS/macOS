@@ -370,7 +370,7 @@ defaults write org.m0k.transmission WarningLegal -bool false
 
 # Hide annoying ~/folders
 
-chflags hidden ~/Applications/
+[ -d ~/Applications/ ] && chflags hidden ~/Applications/
 chflags hidden ~/Documents/
 chflags hidden ~/Movies/
 chflags hidden ~/Music/
