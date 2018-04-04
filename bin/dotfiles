@@ -95,7 +95,7 @@ SUB_COMMAND_NAME=$2
 
 	sub_dock() {
 		# Wipe all (default) app icons from the Dock
-		defaults write com.apple.dock persistent-apps -array
+		defaults write com.apple.dock persistent-apps -array && killall Dock
 	}
 
 
