@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# bash "strict mode"
+set -eu
+
 # check if macOS is running
 
     if test "$(uname)" != "Darwin"; then

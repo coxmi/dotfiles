@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# bash "strict mode"
+set -eu
+
 # check if macOS is running
 
     if test "$(uname)" != "Darwin"; then
@@ -77,8 +80,3 @@
     # replace icon
     rm -f /Applications/Sublime\ Text.app/Contents/Resources/Sublime\ Text.icns
     cp -f $DOTFILES/brew/sublime/Sublime\ Text.icns /Applications/Sublime\ Text.app/Contents/Resources/Sublime\ Text.icns
-
-
-# done
-
-    message success "${BASH_SOURCE[0]} completed"

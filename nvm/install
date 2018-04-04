@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# bash "strict mode"
+set -eu
+
 if ! [ -d ~/.nvm ]; then
 
     message info "Installing nvm…"
@@ -17,8 +20,3 @@ if ! [ -d ~/.nvm ]; then
 else
     message info "nvm already installed, skipping…"
 fi;
-
-
-# done
-
-    message success "${BASH_SOURCE[0]} completed"

@@ -69,17 +69,17 @@ SUB_COMMAND_NAME=$2
 
 		# Run preinstallers
 		for installer in $(find -H "$DOTFILES" -mindepth 2 -maxdepth 2 -name 'preinstall'); do
-			bash $installer
+			bash $installer && message success "$installer completed" || message fail "$installer failed"
 	  	done
 
 		# Run installers
 		for installer in $(find -H "$DOTFILES" -mindepth 2 -maxdepth 2 -name 'install'); do
-			bash $installer
+			bash $installer && message success "$installer completed" || message fail "$installer failed"
 	  	done
 
 	  	# Run postinstallers
 		for installer in $(find -H "$DOTFILES" -mindepth 2 -maxdepth 2 -name 'postinstall'); do
-			bash $installer
+			bash $installer && message success "$installer completed" || message fail "$installer failed"
 	  	done
 	}
 

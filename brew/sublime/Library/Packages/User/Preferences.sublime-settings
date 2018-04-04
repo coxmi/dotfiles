@@ -1,4 +1,5 @@
 {
+	"close_windows_when_empty": false,
 	"color_scheme": "Packages/User/itg.dark.tmTheme",
 	"draw_white_space": "none",
 	"file_exclude_patterns":
@@ -48,9 +49,8 @@
 	"margin": 4,
 	"open_files_in_new_window": false,
 	"scroll_past_end": true,
-	"theme": "Soda Light 3.sublime-theme",
 	"show_encoding": true,
+	"show_full_path": true,
 	"show_line_endings": true,
-	"close_windows_when_empty": false,
-	"show_full_path": true
+	"theme": "Adaptive.sublime-theme"
 }

@@ -5,14 +5,11 @@ set -eu
 
 # install
 
-	brew tap homebrew/php
-
 	brew install curl --with-openssl 
+	brew install php72 autoconf
 
-	brew install php72 --with-httpd --with-homebrew-curl
-
-	brew install php72-opcache php72-apcu php72-xdebug php72-yaml --build-from-source
-
+	xdebug=$( pecl install xdebug ) || message fail "xdebug" && echo "$xdebug"
+	apcu=$( pecl install apcu ) || message fail "APCu failed" && echo "$apcu"
 	
 
 # configure
@@ -21,18 +18,22 @@ set -eu
 	phpini=/usr/local/etc/php/7.2/php.ini
 
 	#apache changes
-	sed -i '' 's|LoadModule php7_module.*|LoadModule php7_module /usr/local/opt/php72/libexec/apache2/libphp7.so|g' $apacheconf
+	sed -i '' 's|LoadModule php7_module.*|LoadModule php7_module /usr/local/opt/php/lib/httpd/modules/libphp7.so|g' $apacheconf
+
+	if ! grep 'LoadModule php7.*' $apacheconf > /dev/null ; then
+		printf "LoadModule php7_module /usr/local/opt/php/lib/httpd/modules/libphp7.so \n" >> $apacheconf
+	fi;
 
 	#php directory index
     sed -i '' 's|DirectoryIndex.*|DirectoryIndex index.php index.html|g' $apacheconf
 
     # add php handler if no matches
-    if ! grep 'SetHandler.*application/x-httpd-php' $apacheconf ; then
-	    echo '<FilesMatch \.php$>
-		    SetHandler application/x-httpd-php
-		</FilesMatch>' >> $apacheconf
+    if ! grep 'SetHandler.*application/x-httpd-php' $apacheconf > /dev/null ; then
+	    echo "<FilesMatch .php$>
+	    	SetHandler application/x-httpd-php
+	    </FilesMatch>" >> $apacheconf
     fi;
 
 # restart apache
 
-sudo apachectl -k restart
+sleep 1; sudo apachectl restart

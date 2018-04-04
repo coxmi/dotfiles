@@ -14,7 +14,7 @@ set -eu
         brew uninstall httpd
         sudo rm -rf /usr/local/etc/httpd
 
-    ) > /dev/null 2>&1
+    ) > /dev/null 2>&1 || message info "Apache errored while removing old version"
 
 # install
 
@@ -66,6 +66,8 @@ set -eu
     sed -i '' 's/<VirtualHost _default_:8443>/<VirtualHost _default_:443>/' $sslconf
     sed -i '' "s|^DocumentRoot \"/usr/local/var/www\"|DocumentRoot \"$HOME/Projects/localhost\"|g" $sslconf
     sed -i '' 's/^ServerName.*/ServerName localhost:443/g' $sslconf
+
+    mkdir -p $HOME/Projects/localhost
 
     cd /usr/local/etc/httpd
 
