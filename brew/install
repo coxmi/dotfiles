@@ -27,6 +27,7 @@ set -eu
         vlc
         transmission
         macdown
+        dropbox
     )
 
     brew cask install "${apps[@]}" --appdir=/Applications
