@@ -33,7 +33,7 @@ set -eu
 
     # move document root
     sed -i '' "s|^DocumentRoot \"/usr/local/var/www\"|DocumentRoot \"$HOME/Projects/localhost\"|g" $apacheconf
-    sed -i '' "s|^<Directory \"/usr/local/var/www\">|<Directory "$HOME/Projects">|g" $apacheconf
+    sed -i '' "s|^<Directory \"/usr/local/var/www\">|<Directory \"$HOME/Projects\">|g" $apacheconf
 
     # set ServerName
     sed -i '' 's/^#ServerName.*/ServerName localhost/g' $apacheconf
@@ -46,26 +46,26 @@ set -eu
     sed -i '' "s/^Group.*/Group staff/" $apacheconf
 
     # enable httpd-vhosts.conf
-    sed -i '' 's|^#Include /usr/local/etc/httpd/extra/httpd-vhosts.conf.*|Include /usr/local/etc/httpd/extra/httpd-vhosts.conf|g' $apacheconf
+    sed -i '' 's|^ *#Include\(.*\/\)httpd-vhosts.conf|Include\1httpd-vhosts.conf|g' $apacheconf
 
     #enable mod_rewrite
-    sed -i '' 's|^#LoadModule rewrite_module lib/httpd/modules/mod_rewrite.so.*|LoadModule rewrite_module lib/httpd/modules/mod_rewrite.so|g' $apacheconf
+    sed -i '' 's|^ *#LoadModule *rewrite_module|LoadModule rewrite_module|g' $apacheconf
 
     #enable mod_vhost_alias
-    sed -i '' 's|^#LoadModule vhost_alias_module lib/httpd/modules/mod_vhost_alias.so.*|LoadModule vhost_alias_module lib/httpd/modules/mod_vhost_alias.so|g' $apacheconf
+    sed -i '' 's|^ *#LoadModule *vhost_alias_module|LoadModule vhost_alias_module|g' $apacheconf
 
     #enable mod_http2
-    sed -i '' 's|^#LoadModule http2_module lib/httpd/modules/mod_http2.so.*|LoadModule http2_module lib/httpd/modules/mod_http2.so|g' $apacheconf
+    sed -i '' 's|^ *#LoadModule *http2_module|LoadModule http2_module|g' $apacheconf
 
     #enable ssl
-    sed -i '' 's|^#LoadModule ssl_module lib/httpd/modules/mod_ssl.so.*|LoadModule ssl_module lib/httpd/modules/mod_ssl.so|g' $apacheconf
-    sed -i '' 's|^#LoadModule socache_shmcb_module lib/httpd/modules/mod_socache_shmcb.so.*|LoadModule socache_shmcb_module lib/httpd/modules/mod_socache_shmcb.so|g' $apacheconf
-    sed -i '' 's|^#Include /usr/local/etc/httpd/extra/httpd-ssl.conf.*|Include /usr/local/etc/httpd/extra/httpd-ssl.conf|g' $apacheconf
-    
-    sed -i '' 's/^Listen 8443/Listen 443/' $sslconf
-    sed -i '' 's/<VirtualHost _default_:8443>/<VirtualHost _default_:443>/' $sslconf
+    sed -i '' 's|^ *#LoadModule *ssl_module|LoadModule ssl_module|g' $apacheconf
+    sed -i '' 's|^ *#LoadModule *socache_shmcb_module|LoadModule socache_shmcb_module|g' $apacheconf
+    sed -i '' 's|^ *#Include\(.*\/\)httpd-ssl.conf|Include\1httpd-ssl.conf|g' $apacheconf
+
+    sed -i '' 's|^Listen 8443|Listen 443|g' $sslconf
+    sed -i '' 's|<VirtualHost _default_:8443>|<VirtualHost _default_:443>|g' $sslconf
     sed -i '' "s|^DocumentRoot \"/usr/local/var/www\"|DocumentRoot \"$HOME/Projects/localhost\"|g" $sslconf
-    sed -i '' 's/^ServerName.*/ServerName localhost:443/g' $sslconf
+    sed -i '' 's|^ServerName.*|ServerName localhost:443|g' $sslconf
 
     mkdir -p $HOME/Projects/localhost
 
