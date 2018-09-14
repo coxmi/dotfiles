@@ -7,15 +7,22 @@ set -eu
 
 	brew install curl --with-openssl 
 	brew install php72 autoconf
+	brew install mcrypt
 
 	xdebug=$( pecl install xdebug ) || message fail "xdebug" && echo "$xdebug"
 	apcu=$( pecl install apcu ) || message fail "APCu failed" && echo "$apcu"
-	
+
+	# mcrypyt
+	brew install mcrypt
+	sudo pecl install mcrypt-1.0.1
 
 # configure
 
 	apacheconf=/usr/local/etc/httpd/httpd.conf
 	phpini=/usr/local/etc/php/7.2/php.ini
+
+	sudo bash -c "echo extension=/usr/lib/php/20170718/mcrypt.so > /etc/php/7.2/cli/conf.d/mcrypt.ini"
+	sudo bash -c "echo extension=/usr/lib/php/20170718/mcrypt.so > /etc/php/7.2/apache2/conf.d/mcrypt.ini"
 
 	#apache changes
 	sed -i '' 's|LoadModule php7_module.*|LoadModule php7_module /usr/local/opt/php/lib/httpd/modules/libphp7.so|g' $apacheconf
