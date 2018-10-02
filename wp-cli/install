@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+# bash "strict mode"
+set -eu
+
+# install
+
+	$(which wp) || (
+	    curl -s -o /usr/local/bin/wp https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
+	    chmod +x /usr/local/bin/wp
+	) && message success "installed wp-cli"
