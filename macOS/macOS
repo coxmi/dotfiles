@@ -183,6 +183,9 @@ defaults write com.apple.dock mru-spaces -bool false
 # Automatically hide and show the Dock
 defaults write com.apple.dock autohide -bool true
 
+# Remove delay from hiding and showing the Dock (retains the slide animation)
+defaults write com.apple.dock autohide-delay -float 0;
+
 message success "Dock and Dashboard"
 
 
