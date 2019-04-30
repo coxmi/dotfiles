@@ -19,6 +19,15 @@
 		<dict>
 			<key>settings</key>
 			<dict>
+				
+				<!-- git mini diff colours for sublime ≥3.2.1 -->
+				<key>line_diff_width</key>
+				<string>3</string>
+				<key>line_diff_added</key>
+				<string>#2f2e3b</string>
+				<key>line_diff_modified</key>
+				<string>#565a5e</string>
+
 				<key>activeGuide</key>
 				<string>#9D550FB0</string>
 				<key>background</key>

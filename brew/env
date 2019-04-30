@@ -10,3 +10,14 @@ function youtube-dl() {
     * ) command youtube-dl "$@" ;;
   esac
 }
+
+
+function sublime-update-prefs() {
+	# move prefs into place
+	mkdir -p ~/Library/Application\ Support/Sublime\ Text\ 3
+	cp -af $DOTFILES/brew/sublime/Library/. ~/Library/Application\ Support/Sublime\ Text\ 3
+
+	# replace icon
+	rm -f /Applications/Sublime\ Text.app/Contents/Resources/Sublime\ Text.icns
+	cp -f $DOTFILES/brew/sublime/Sublime\ Text.icns /Applications/Sublime\ Text.app/Contents/Resources/Sublime\ Text.icns
+}
