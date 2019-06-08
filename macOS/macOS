@@ -237,6 +237,11 @@ defaults write com.apple.mail DisableSendAnimations -bool true
 # Add the keyboard shortcut ⌘ + Enter to send an email in Mail.app
 # defaults write com.apple.mail NSUserKeyEquivalents -dict-add "Send" "@\U21a9"
 
+# to reset to ⌘⇧D
+# defaults write com.apple.mail NSUserKeyEquivalents '{
+#   "Send"="@$d";
+# }'
+
 # Enable classic mode
 defaults write com.apple.mail RichMessageList -bool false
 
