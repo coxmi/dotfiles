@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+
+if [ -z "$1" ] || [ -z "$2" ]
+  then
+    echo "must supply two arguments: togif in.mp4 out.gif"
+    exit 1
+fi
+
+VIDEO=$1
+GIF=$2
+
+mkdir _togif_temp
+ffmpeg -hide_banner -loglevel panic -i $VIDEO -vf fps=20 _togif_temp/frame%04d.png
+gifski -o $GIF _togif_temp/frame*.png
+rm -rf _togif_temp
