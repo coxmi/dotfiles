@@ -22,11 +22,11 @@ function ssh_list_hosts() {
 	# remove any `Host *` entries
 	# cut string on " " delimeter, list 2nd entry (without "Host" word)
 	# replace spaces with newlines
-	local sshHosts=$(
+	local sshHosts="$(
 		grep -s --ignore-case --no-filename "^Host" $configFiles \
 		| grep --invert-match "[?*]" \
 		| cut -d " " -f 2
-	);
+	)";
 
 	echo $sshHosts | tr ' ' '\n'
 }

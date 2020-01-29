@@ -1,0 +1,136 @@
+#!/usr/bin/env bash
+
+
+# options
+
+	watch=
+	domains=()
+
+
+# functions 
+
+	function dns_help {
+	    echo "Usage: $BIN_NAME [--watch|-w] <domain> [...<domain>]"
+	}
+
+
+	function dns_canonical {
+
+		domain="$1"
+
+		# Get all A record results (ignores CNAME records)
+		a_records=$( dig $domain +noall +answer | grep '^[^;].*IN[[:blank:]]*A' )
+		
+		if [[ -z "$a_records" ]]
+			then echo "No A record set for $domain"
+			return 1
+		fi
+
+		a_record=$(echo $a_records | head -n1)
+		echo $a_record
+		return 0
+	}
+
+
+	function dns_nameserver {
+		domain="$1"
+		lookup="$(nslookup -type=ns $domain)"
+		echo "$lookup" | grep -e 'nameserver' -e 'origin' | sed -E 's/.*=[[:blank:]]+(.*)[[:blank:]]*/\1/' | head -n1
+
+		# alternative
+		# nameserver=$( dig $domain NS +noall +authority | grep SOA | sed -E 's/.*SOA[[:blank:]]([^[:blank:]]*).*/\1/' | head -n1 | cut -d' ' -f1 )
+	}
+
+
+	function dns_lookup {
+
+		domain="$1"
+		lookup=""
+
+		# early return on non-valid domain
+		if ! [[ "$domain" =~ ^[a-zA-Z0-9][a-zA-Z0-9-]*(\.[a-zA-Z]{2,})+\.*$ ]]; then
+			echo "Invalid domain: $domain"
+			return 1
+		fi
+
+		canonical_record="$(dns_canonical $domain)" || { 
+			echo "No canonical record found for $domain"
+			return 1 
+		}
+
+		canonical_domain="$(echo $canonical_record | cut -d' ' -f1)"
+		canonical_address="$(echo $canonical_record | cut -d' ' -f5)"
+		
+		# get authoritative nameserver (SOA) of canonical domain
+		nameserver="$(dns_nameserver $canonical_domain)" || {
+			echo "No nameserver found for canonical domain $canonical_domain"
+			return 1
+		}
+
+		if [[ "$nameserver" != "" ]]; then
+			lookup="$(dig "$canonical_domain" "@$nameserver" +noall +answer | grep ^$canonical_domain | grep IN)"
+			lookup="${lookup} (from: $nameserver)"
+		fi;
+
+		if [[ "$lookup" != "" ]]; then
+			echo $lookup
+		else 
+			echo "Record not found for: $domain."
+		fi
+	}
+
+
+	function dns_lookup_multiple {
+		for domain in "$@"; do
+		  dns_lookup $domain
+		done
+	}
+
+
+	function dns_poll {
+
+		if [[ $watch != 1 ]]; then
+			  dns_lookup_multiple "$@"
+			return
+		fi
+
+		index=0
+		while true; do 
+			if [[ $index != 0 ]]; then echo "—————"; fi;
+			dns_lookup_multiple "$@"
+			sleep 1; 
+			index=$((index + 1))
+		done
+	}
+
+
+# input 
+
+	if [ -z "$1" ]
+	  then
+	    echo "must supply at least 1 argument"
+	    dns_help
+	    exit 1
+	fi
+
+
+	while test $# -gt 0; do
+	  case $1 in
+	  	# usage and help
+	    -h | --help)
+	      dns_help
+	      exit 0
+	      ;;
+	    # watch on a 1-second loop
+	    -w | --watch)
+	      watch=1
+	      ;;
+	    # save other args in list
+	    *)
+			domains+=($1)
+	  esac
+	  shift
+	done
+
+	dns_poll ${domains[@]};
+

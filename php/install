@@ -3,6 +3,13 @@
 # bash "strict mode"
 set -eu
 
+
+# stop install script
+
+	message fail "This PHP install script is deprecated, please attempt a manual install"
+	exit 0
+
+
 # install
 
 	brew install curl --with-openssl 
@@ -15,6 +22,7 @@ set -eu
 	# mcrypyt
 	# brew install mcrypt
 	# sudo pecl install mcrypt-1.0.1
+
 
 # configure
 
@@ -40,6 +48,7 @@ set -eu
 	    	SetHandler application/x-httpd-php
 	    </FilesMatch>" >> $apacheconf
     fi;
+
 
 # restart apache
 
