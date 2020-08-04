@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+
+# bash "strict mode"
+set -eu
+
+scriptname=${0##*/}
+
+if [ $# -eq 0 ]; then
+	echo "must supply one argument: \`$scriptname in.pdf\`" >&2
+	exit 1
+fi
+
+if [ ! -f "$1" ]; then
+    echo "file $1 does not exist" >&2
+    exit 1
+fi
+
+in=$1
+extension="${in##*.}"
+
+if [ ! "$extension" = ".pdf" ]; then
+	echo "file \"$1\" is not a .pdf" >&2
+	exit 1
+fi
+
+out=$(basename "$in" ".pdf")-compressed.pdf
+
+# Other options for PDFSETTINGS:
+# /screen selects low-resolution output similar to the Acrobat Distiller "Screen Optimized" setting.
+# /ebook selects medium-resolution output similar to the Acrobat Distiller "eBook" setting.
+# /printer selects output similar to the Acrobat Distiller "Print Optimized" setting.
+# /prepress selects output similar to Acrobat Distiller "Prepress Optimized" setting.
+# /default selects output intended to be useful across a wide variety of uses, possibly at the expense of a larger output file.
+
+gs \
+	-dNOPAUSE \
+	-dQUIET -dBATCH -dSAFER \
+	-dSimulateOverprint=true \
+	-sDEVICE=pdfwrite \
+	-dPDFSETTINGS=/ebook \
+	-dCompatibilityLevel=1.4 \
+	-dEmbedAllFonts=true \
+	-dSubsetFonts=true \
+	-dAutoRotatePages=/None \
+	-dPrinted=false \
+	-sOutputFile="$out" \
+	"$in"
+
+
+echo "created ${out}"

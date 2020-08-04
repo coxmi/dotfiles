@@ -1,16 +1,24 @@
 #!/usr/bin/env bash
 
+# bash "strict mode"
+set -eu
 
-if [ -z "$1" ] || [ -z "$2" ]
-  then
-    echo "must supply two arguments: togif in.mp4 out.gif"
+if [ $# -eq 0 ]; then
+	echo "must supply one argument: \`togif in.mp4\`" >&2
+	exit 1
+fi
+
+if [ ! -f "$1" ]; then
+    echo "file \"$1\" does not exist"
     exit 1
 fi
 
-VIDEO=$1
-GIF=$2
+in=$1
+out=${in%.*}.gif
 
-mkdir .togif
-ffmpeg -hide_banner -loglevel panic -i $VIDEO -vf fps=20 .togif/frame%04d.png
-gifski -o $GIF .togif/frame*.png
+FPS=20
+
+mkdir -p ".togif"
+ffmpeg -hide_banner -loglevel panic -i $in -vf fps=$FPS .togif/frame%04d.png
+gifski -o $out --fps=$FPS .togif/frame*.png
 rm -rf .togif
