@@ -18,7 +18,7 @@ fi
 in=$1
 extension="${in##*.}"
 
-if [ ! "$extension" = ".pdf" ]; then
+if [ ! "$extension" = "pdf" ]; then
 	echo "file \"$1\" is not a .pdf" >&2
 	exit 1
 fi
