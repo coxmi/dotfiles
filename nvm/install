@@ -1,20 +1,13 @@
 #!/usr/bin/env bash
 
-# bash "strict mode"
 set -eu
 
 if ! [ -d ~/.nvm ]; then
-
     message info "Installing nvm…"
-
-    export NVM_DIR="$HOME/.nvm" && (
-        git clone https://github.com/creationix/nvm.git "$NVM_DIR" --quiet
-        cd "$NVM_DIR"
-        git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" origin` --quiet
-    ) && . "$NVM_DIR/nvm.sh"
-
+    export NVM_DIR="$HOME/.nvm"
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+    source "$NVM_DIR/nvm.sh"
     nvm install node
-
     message success "Installed nvm"
 
 else
