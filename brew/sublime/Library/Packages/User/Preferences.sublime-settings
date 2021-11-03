@@ -1,4 +1,10 @@
 {
+	"binary_file_patterns":
+	[
+		"wordpress/*",
+		"dist/*",
+		"plugins/*"
+	],
 	"close_windows_when_empty": false,
 	"color_scheme": "Packages/User/itg.dark.tmTheme",
 	"draw_white_space": "none",

@@ -1,50 +1,46 @@
 [
 	{ "keys": ["super+shift+d"], "command": "toggle_side_bar" },
 	{ "keys": ["ctrl+w"], "command": "toggle_setting", "args": {"setting": "word_wrap"}},
+
+	// emmet expand with ctrl+e
 	{
-	  "keys": ["tab"], 
-	  "command": "expand_abbreviation_by_tab", 
+		"keys": ["ctrl+e"],
+		"command": "emmet_expand_abbreviation"
+	},
 
-	  // put comma-separated syntax selectors for which 
-	  // you want to expandEmmet abbreviations into "operand" key 
-	  // instead of SCOPE_SELECTOR.
-	  // Examples: source.js, text.html - source
-	  "context": [
-	    {
-	      "operand": "meta.group.braces.round.js, meta.group.braces.round.jsx", 
-	      "operator": "equal", 
-	      "match_all": true, 
-	      "key": "selector"
-	    }, 
+	// add sublime’s built-in tag closer to jsx using `</`
+	{ "keys": ["<", "/"], "command": "close_tag", "args": { "insert_slash": true }},
 
-	    // run only if there's no selected text
-	    {
-	      "match_all": true, 
-	      "key": "selection_empty"
-	    },
+	// emmet 2 – restore old behaviour, from: https://github.com/emmetio/sublime-text-plugin#i-dont-like-new-behavior-with-abbreviation-capturing-id-like-to-expand-with-tab-as-earlier
+	{
+	    "keys": ["tab"],
+	    "command": "emmet_expand_abbreviation",
+	    "args": { "tab": true },
+	    "context": [
+	        { "key": "emmet_capture_abbreviation" },
+	        { "key": "selection_empty" },
+	        { "key": "has_next_field", "operand": false },
+	        { "key": "auto_complete_visible", "operand": false },
+	        // removed 'source'
+	        { "key": "selector", "operand": "source.css, source.sass, source.less, source.scss, source.stylus, source.postcss, source.jade, text.jade, source.pug, text.pug, text.slim, text.xml, text.html - text.haml, text.scala.html, source string" }
+	    ]
+	},
 
-	    // don't work if there are active tabstops
-	    {
-	      "operator": "equal", 
-	      "operand": false, 
-	      "match_all": true, 
-	      "key": "has_next_field"
-	    }, 
+	// emmet 2 – allow in js files when auto complete not open
+	{
+	    "keys": ["tab"],
+	    "command": "emmet_expand_abbreviation",
+	    "args": { "tab": true },
+	    "context": [
 
-	    // don't work if completion popup is visible and you
-	    // want to insert completion with Tab. If you want to
-	    // expand Emmet with Tab even if popup is visible -- 
-	    // remove this section
-	    {
-	      "operand": false, 
-	      "operator": "equal", 
-	      "match_all": true, 
-	      "key": "auto_complete_visible"
-	    }, 
-	    {
-	      "match_all": true, 
-	      "key": "is_abbreviation"
-	    }
-	  ]
-	}
+	    	// don't init on tab stops or empty line (default emmet behaviour makes cursor jump around)
+	    	{ "key" : "preceding_text", "operator" : "not_regex_match", "operand" : "^\\s*$" },
+
+	    	// standard emmet context, with has_next_field removed
+	    	{ "key": "emmet_capture_abbreviation" },
+	        { "key": "selection_empty" },
+	        { "key": "auto_complete_visible", "operand": false },
+	        { "key": "selector", "operand": "source.js" }
+	    ]
+	},
 ]
