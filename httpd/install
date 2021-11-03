@@ -1,39 +1,39 @@
 #!/usr/bin/env bash
 
-# bash "strict mode"
-set -eu
+# remove old Apache versions, and install fresh
 
-# stop/remove previous apache builds
+    HOMEBREW_PATH=$(brew --prefix)
+    DIR="$( cd "$( dirname "${BASH_SOURCE[0]:-${(%):-%x}}" )" && pwd )"
 
-    (
-        # built-in apache
-        sudo apachectl stop
-        sudo launchctl unload -w /System/Library/LaunchDaemons/org.apache.httpd.plist 2>/dev/null
-        # brew-installed apache
-        sudo brew services stop httpd
-        brew uninstall httpd
-        sudo rm -rf /usr/local/etc/httpd
+    # remove brew-installed apache
+    brew services stop httpd &> /dev/null
+    sudo brew services stop httpd &> /dev/null
+    brew remove httpd --force &> /dev/null
+    brew unlink httpd &> /dev/null
+    sudo rm -rf "$(brew --cellar httpd)" &> /dev/null
 
-    ) > /dev/null 2>&1 || message info "Apache errored while removing old version"
+    # stop built-in apache from running
+    sudo /usr/sbin/apachectl stop &> /dev/null
+    sudo launchctl unload -w /System/Library/LaunchDaemons/org.apache.httpd.plist &> /dev/null
 
-# install
-
+    # set bail early, and install
+    set -eu
     brew install httpd lynx
+    brew services start httpd
 
-    # start on :8080
-    sudo brew services start httpd
 
 # configure
-
-    apacheconf=/usr/local/etc/httpd/httpd.conf
-    sslconf=/usr/local/etc/httpd/extra/httpd-ssl.conf
+    
+    apacheconf="$HOMEBREW_PATH/etc/httpd/httpd.conf"
+    vhostconf="$HOMEBREW_PATH/etc/httpd/extra/httpd-vhosts.conf"
+    sslconf="$HOMEBREW_PATH/etc/httpd/extra/httpd-ssl.conf"
 
     # listen on port 80
     sed -i '' 's/^Listen 8080/Listen 80/' $apacheconf
 
     # move document root
-    sed -i '' "s|^DocumentRoot \"/usr/local/var/www\"|DocumentRoot \"$HOME/Projects/localhost\"|g" $apacheconf
-    sed -i '' "s|^<Directory \"/usr/local/var/www\">|<Directory \"$HOME/Projects\">|g" $apacheconf
+    sed -i '' "s|^DocumentRoot \"$HOMEBREW_PATH/var/www\"|DocumentRoot \"$HOME/Projects/localhost\"|g" $apacheconf
+    sed -i '' "s|^<Directory \"$HOMEBREW_PATH/var/www\">|<Directory \"$HOME/Projects\">|g" $apacheconf
 
     # set ServerName
     sed -i '' 's/^#ServerName.*/ServerName localhost/g' $apacheconf
@@ -64,12 +64,12 @@ set -eu
 
     sed -i '' 's|^Listen 8443|Listen 443|g' $sslconf
     sed -i '' 's|<VirtualHost _default_:8443>|<VirtualHost _default_:443>|g' $sslconf
-    sed -i '' "s|^DocumentRoot \"/usr/local/var/www\"|DocumentRoot \"$HOME/Projects/localhost\"|g" $sslconf
+    sed -i '' "s|^DocumentRoot \"$HOMEBREW_PATH/var/www\"|DocumentRoot \"$HOME/Projects/localhost\"|g" $sslconf
     sed -i '' 's|^ServerName.*|ServerName localhost:443|g' $sslconf
 
     mkdir -p $HOME/Projects/localhost
 
-    cd /usr/local/etc/httpd
+    cd $HOMEBREW_PATH/etc/httpd
 
     openssl req \
     -new \
@@ -80,6 +80,18 @@ set -eu
     -subj "/C=GB/ST=localhost/L=localhost/O=localhost/CN=localhost" \
     -keyout server.key \
     -out server.crt
+
+    # replace standard file with vhost template
+
+    if grep -qF 'dummy-host.example.com' $vhostconf; then
+        mv $vhostconf "$vhostconf.original"
+        cp "$DIR/httpd-vhosts.conf" $vhostconf;
+        sed -i '' "s|{projects}|$HOME/Projects|g" $vhostconf
+        sed -i '' "s|{sslCert}|$HOMEBREW_PATH/etc/httpd/server.crt|g" $vhostconf
+        sed -i '' "s|{sslKey}|$HOMEBREW_PATH/etc/httpd/server.key|g" $vhostconf
+    fi
+
+    open $vhostconf
     
 
 # restart apache
