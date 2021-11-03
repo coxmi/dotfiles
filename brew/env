@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# never run auto update when brew installing
+
+export HOMEBREW_NO_AUTO_UPDATE=1
+
 
 # `youtube-dl best "url"`
 # otherwise falls back to usual youtube-dl behaviour

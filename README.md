@@ -10,11 +10,11 @@ On a fresh installation of macOS:
 
 Install in `~/.dotfiles` with git:
 
-    git clone https://github.com/michaeland/dotfiles.git ~/.dotfiles && source ~/.dotfiles/install
+    git clone https://github.com/coxmi/dotfiles.git ~/.dotfiles && source ~/.dotfiles/install
 
 Or alternatively with curl:
 
-    curl -fsSL https://raw.githubusercontent.com/michaeland/dotfiles/master/install-remote | bash
+    curl -fsSL https://raw.githubusercontent.com/coxmi/dotfiles/master/install-remote | bash
 
 
 ## Conventions

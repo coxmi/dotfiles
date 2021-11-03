@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+# input
+	input=$1
+	size=${2:-1080}
+	crf=${3:-25}
+	audio=${4:0}
+
+# vars
+	extension=mp4
+	inputNameWithoutExtension=${input%.*}
+	timestamp="$(date +%s)"
+	[[ $audio == 1 ]] && audioString="audio" || audioString="noaudio";
+	outfile="./tmp/${inputNameWithoutExtension}-${size}-q${crf}-${audioString}-${timestamp}.${extension}"
+
+# setup
+	mkdir -p ./tmp
+
+# sets audioArg based on $audio boolean
+[[ $audio == 1 ]] && audioArg="" || audioArg="-an";
+
+# testArg="\
+# 	-ss 00:00:00 \
+# 	-t 00:00:5 \
+# "
+
+ffmpeg \
+	-i $input \
+	-c:v libx264 \
+	-crf $crf \
+	-preset veryslow \
+	-vf scale=-2:$size \
+	$audioArg \
+	-movflags faststart \
+	-loglevel warning \
+	-hide_banner -stats \
+	"$outfile";
+
+
+# -vf scale=-2:720 = -2 is for even number of pixels, -1 allows odd number
