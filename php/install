@@ -28,9 +28,7 @@
 
     # add php handler if no matches
     if ! grep 'SetHandler.*application/x-httpd-php' $apacheconf > /dev/null ; then
-	    echo "<FilesMatch .php$>
-	    	SetHandler application/x-httpd-php
-	    </FilesMatch>" >> $apacheconf
+	    echo "<FilesMatch .php$>\n\tSetHandler application/x-httpd-php\n</FilesMatch>" >> $apacheconf
     fi;
 
 
