@@ -11,6 +11,6 @@ if [ -z "$CMD" ]; then
 else
   echo "Installing dotfiles respository"
   mkdir -p "$HOME/.dotfiles" && \
-  eval "$CMD https://github.com/michaeland/dotfiles/tarball/master | tar -xzv -C ~/.dotfiles --strip-components=1"
+  eval "$CMD https://github.com/coxmi/dotfiles/tarball/master | tar -xzv -C ~/.dotfiles --strip-components=1"
   source $HOME/.dotfiles/install
 fi

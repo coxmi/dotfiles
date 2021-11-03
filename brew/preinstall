@@ -12,27 +12,28 @@ set -eu
 
 # Install homebrew
 
-    if ! [ -x "$(command -v brew)" ]; then
-        # Homebrew is missing, install it
+    if ! [ -x $(command -v brew) ]; then
         message info "Installing brew"
-        ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     else
         message info "brew is already installed, skipping…"
+        HOMEBREW_PREFIX=$(brew --prefix)
     fi;
 
     message info "brew updating…"
-
-    brew update --quiet
-    brew upgrade --quiet
-
+    $HOMEBREW_PREFIX/bin/brew update --quiet
+    $HOMEBREW_PREFIX/bin/brew upgrade --quiet
+    brew analytics off
 
 
 # Install brew utilities
 
     message info "Installing brew utilities…"
+    $HOMEBREW_PREFIX/bin/brew install coreutils --quiet
+    $HOMEBREW_PREFIX/bin/brew tap homebrew/cask --quiet
+    $HOMEBREW_PREFIX/bin/brew tap homebrew/cask-fonts --quiet
 
-    brew install coreutils --quiet
 
-    brew tap caskroom/cask --quiet
-    brew tap caskroom/fonts --quiet
+# shell env path
 
+    eval "$($HOMEBREW_PREFIX/bin/brew shellenv)"

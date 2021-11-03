@@ -1,13 +1,21 @@
 #!/usr/bin/env bash
 
-export DOTFILES="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+function current_shell() {
+    echo $(ps -p $$ | awk '{if(NR>1)print}' | awk '$0=$NF' | tr -d -)
+}
 
-# Load shell env — source all ${folder}/{env,alias,functions,path,profile,prompt} files, excluding /bin
+export DOTFILES="$( cd "$( dirname "${BASH_SOURCE[0]:-${(%):-%x}}" )" && pwd )"
 
-shopt -s extglob; # allows extended glob, e.g. !(bin)
+# source all env, alias, functions, path, profile, prompt files, excluding /bin
 
-for file in $DOTFILES/!(bin)/{env,alias,functions,path,profile,prompt}; do
-    if [ -r "$file" ] && [ -x $file ]; then
+for file in $DOTFILES/*/{env,alias,functions,path,profile,prompt}; do
+
+    # do not include files in /bin
+    if (echo "$file" | grep -q "$DOTFILES/bin"); then
+        continue
+    fi
+
+    if [ -r "$file" ] && [ -x "$file" ]; then
         source $file
     fi
 done

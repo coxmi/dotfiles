@@ -1,19 +1,32 @@
 #!/usr/bin/env bash
 
 # enable colour output
+
 export CLICOLOR=1
 export LSCOLORS=ExFxBxDxCxegedabagacad
 
+
 # Case-insensitive globbing (used in pathname expansion)
-shopt -s nocaseglob
+# and exclude, e.g. ls !(folder)
+
+if [ -n "$ZSH_VERSION" ]; then
+	setopt extendedglob
+	unsetopt CASE_GLOB
+elif [ -n "$BASH_VERSION" ]; then
+	shopt -s extglob
+	shopt -s nocaseglob
+fi
+
 
 # Autocorrect typos in path names when using `cd`
-shopt -s cdspell
 
-# Enable exclude in glob, e.g. ls !(folder)
-shopt -s extglob
+if [ -n "$BASH_VERSION" ]; then
+	shopt -s cdspell
+fi
+
 
 # Highlight section titles in man pages
+
 export LESS_TERMCAP_mb=$(printf '\e[01;31m') # enter blinking mode – red
 export LESS_TERMCAP_md=$(printf '\e[01;35m') # enter double-bright mode – bold, magenta
 export LESS_TERMCAP_me=$(printf '\e[0m') # turn off all appearance modes (mb, md, so, us)
@@ -22,6 +35,10 @@ export LESS_TERMCAP_so=$(printf '\e[01;33m') # enter standout mode – yellow
 export LESS_TERMCAP_ue=$(printf '\e[0m') # leave underline mode
 export LESS_TERMCAP_us=$(printf '\e[04;36m') # enter underline mode – cyan
 
+
 # Do not autocomplete when accidentally pressing Tab on an empty line.
-shopt -s no_empty_cmd_completion
+
+if [ -n "$BASH_VERSION" ]; then
+	shopt -s no_empty_cmd_completion
+fi
 

@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+
+# bash or zsh escape sequences
+
+
+if [[ $(current_shell) == "zsh" ]]; then
+   setopt PROMPT_SUBST
+   esc1="%{"
+   esc2="%}"
+   workingDir="%~"
+elif [[ $(current_shell) == "bash" ]]; then
+   esc1="\["
+   esc2="\]"
+   workingDir="\w"
+fi
+
+
+# set colours
+
+	if tput setaf 1 &> /dev/null; then
+		reset="${esc1}$(tput sgr0)${esc2}"
+		bold="${esc1}$(tput bold)${esc2}"
+		black="${esc1}$(tput setaf 0)${esc2}"
+		blue="${esc1}$(tput setaf 33)${esc2}"
+		cyan="${esc1}$(tput setaf 37)${esc2}"
+		green="${esc1}$(tput setaf 64)${esc2}"
+		orange="${esc1}$(tput setaf 166)${esc2}"
+		magenta="${esc1}$(tput setaf 125)${esc2}"
+		red="${esc1}$(tput setaf 124)${esc2}"
+		violet="${esc1}$(tput setaf 61)${esc2}"
+		white="${esc1}$(tput setaf 15)${esc2}"
+		yellow="${esc1}$(tput setaf 136)${esc2}"
+		purpleDark="$(tput setaf 18)"
+		lilac="$(tput setaf 60)"
+		dim="$(tput setaf 238)"
+	fi
+
+
+# Set the terminal title and prompt.
+	newline=$'\n'
+	# reset
+	PS1="${reset}"
+	# working directory full path
+	PS1+=" ${magenta}${bold}${workingDir}${reset}"
+	# git repository details
+	PS1+="${violet}\$(prompt_git)${reset}"
+	# `☞ ❯ →` (and reset color)
+	PS1+="${white} ❯${reset} "
+	# add newlines before PS1
+	PS1="${newline}$PS1"
+	# export
+	export PS1
+
+	PS2="${magenta}→ ${reset}"
+	export PS2

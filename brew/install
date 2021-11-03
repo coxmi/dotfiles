@@ -30,7 +30,7 @@ set -eu
         dropbox
     )
 
-    brew cask install "${apps[@]}" --appdir=/Applications
+    brew install --cask "${apps[@]}" --appdir=/Applications
 
 
 # Install QuickLook plugins (https://github.com/sindresorhus/quick-look-plugins)
@@ -49,7 +49,7 @@ set -eu
         quicklook-pat
     )
 
-    brew cask install "${ql[@]}"
+    brew install --cask "${ql[@]}"
 
 
 # Install utilities
@@ -66,14 +66,13 @@ set -eu
 # Install fonts
 
     fonts=(
-      font-source-code-pro
       font-ibm-plex
     )
-    brew cask install ${fonts[@]}
+    brew install --cask ${fonts[@]}
 
 
 # Sublime
 
-    brew cask install sublime-text --appdir=/Applications
+    brew install --cask sublime-text --appdir=/Applications
 
     sublime-update-prefs

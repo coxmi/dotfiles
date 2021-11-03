@@ -1,30 +1,37 @@
 #!/usr/bin/env bash
 
-# dotfiles location 
+    function current_shell() {
+        echo $(ps -p $$ | awk '{if(NR>1)print}' | awk '$0=$NF' | tr -d -)
+    }
 
-    export DOTFILES="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+    export DOTFILES="$( cd "$( dirname "${BASH_SOURCE[0]:-${(%):-%x}}" )" && pwd )"
+    cd $DOTFILES 
 
-    echo "Installing dotfiles at $DOTFILES"
 
-    mkdir -p $DOTFILES && cd $DOTFILES 
+# source shell env inside .zshrc .bash_profile and .bashrc
+    
+    printf "\nInstalling dotfiles at ${DOTFILES}…\n"
 
-# source shell env inside .bash_profile and .bashrc
-
-    touch ~/.bash_profile && touch ~/.bashrc
- 
-    if ! grep -Fq "source ~/.bashrc" ~/.bash_profile ; then
-        echo -e "# edit dotfiles in $DOTFILES \nsource ~/.bashrc" >> ~/.bash_profile
-    fi    
-
-    if ! grep -Fq "source $DOTFILES/env" ~/.bashrc ; then
-        echo -e "# edit dotfiles in $DOTFILES \nsource $DOTFILES/env" >> ~/.bashrc
+    if [[ $(current_shell) == 'zsh' ]]; then
+        touch ~/.zshrc
+        if ! grep -Fq "# edit dotfiles in" ~/.zshrc ; then
+            echo -e "# edit dotfiles in $DOTFILES \nsource $DOTFILES/env" >> ~/.zshrc
+        fi
     fi
+
+    if [[ $(current_shell) == 'bash' ]] || [ -f ~/.bash_profile ] || [ -f ~/.bashrc ]; then
+        touch ~/.bashrc
+        if ! grep -Fq "source $DOTFILES/env" ~/.bashrc ; then
+            echo -e "# edit dotfiles in $DOTFILES \nsource $DOTFILES/env" >> ~/.bashrc
+        fi
+    fi
+
 
 # source shell env, and run help command
 
     source $DOTFILES/env
 
+    echo ""
     dotfiles files
+    echo ""
     dotfiles help
-
-    source ~/.bash_profile
