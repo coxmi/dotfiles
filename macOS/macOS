@@ -67,8 +67,14 @@ defaults write com.apple.helpviewer DevMode -bool true
 # Set clock to full format
 defaults write com.apple.menuextra.clock DateFormat -string 'EEE d MMM  h:mm a'
 
-# Set Dark theme
-defaults write NSGlobalDomain AppleInterfaceStyle -string "Dark"
+#Disable sound effect when changing volume
+defaults write -g com.apple.sound.beep.feedback -integer 0
+
+#Disable user interface sound effects
+defaults write com.apple.systemsound 'com.apple.sound.uiaudio.enabled' -int 0
+
+#Set system sounds volume to 0
+defaults write com.apple.systemsound com.apple.sound.beep.volume -float 0
 
 message success "General UI/UX"
 
@@ -186,7 +192,7 @@ defaults write com.apple.dock autohide -bool true
 # Remove delay from hiding and showing the Dock (retains the slide animation)
 defaults write com.apple.dock autohide-delay -float 0;
 
-message success "Dock and Dashboard"
+message success "Dock"
 
 
 # Safari & WebKit
