@@ -13,9 +13,9 @@ if ! [ -d ~/.nvm ]; then
         git checkout `git describe --abbrev=0 --tags --match "v[0-9]*" $(git rev-list --tags --max-count=1)`
     ) && \. "$NVM_DIR/nvm.sh"
 
-    nvm install node
+    nvm install --lts
 
-    message success "Installed nvm"
+    message success "Installed latest nvm, node (lts), and npm"
 
 else
     message info "nvm already installed, skipping…"
