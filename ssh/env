@@ -14,19 +14,18 @@ function ssh_list_hosts() {
 	# get references to Included ssh config files, if any
 	local sshIncludedPaths=$(grep "^Include" $CONFIG | cut -d " " -f 2)
 
-	# expand any file globs to get all first-level config files, 
-	# and redirect any fails (stderr) to /dev/null
-	local configFiles=$(eval ls $sshIncludedPaths 2>/dev/null)
+	# expand any file globs using eval to get all config file paths, 
+	local paths=$(eval "print $sshIncludedPaths") 2> /dev/null
 
 	# find any Host directives
 	# remove any `Host *` entries
 	# cut string on " " delimeter, list 2nd entry (without "Host" word)
 	# replace spaces with newlines
 	local sshHosts="$(
-		grep -s --ignore-case --no-filename "^Host" $configFiles \
+		grep --ignore-case --no-filename "^Host" $(print $paths) \
 		| grep --invert-match "[?*]" \
 		| cut -d " " -f 2
-	)";
+	)"
 
 	echo $sshHosts | tr ' ' '\n'
 }
