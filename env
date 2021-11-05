@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function current_shell() {
-    echo $(ps -cp $$ -o command | tail -1 | tr -d -)
+    ps -co 'comm=' $$ | tr -d '-'
 }
 
 export DOTFILES="$( cd "$( dirname "${BASH_SOURCE[0]:-${(%):-%x}}" )" && pwd )"
