@@ -48,7 +48,7 @@
 	"ignore_vcs_packages": true,
 	"ignored_packages":
 	[
-		"Vintage"
+		"Vintage",
 	],
 	"line_padding_bottom": 3,
 	"line_padding_top": 3,
@@ -59,5 +59,5 @@
 	"show_full_path": true,
 	"show_line_endings": true,
 	"theme": "Adaptive.sublime-theme",
-	"mini_diff" : "auto"
+	"mini_diff" : "auto",
 }

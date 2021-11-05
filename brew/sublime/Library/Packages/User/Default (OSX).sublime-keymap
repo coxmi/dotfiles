@@ -1,46 +1,45 @@
 [
+	// basic commands
 	{ "keys": ["super+shift+d"], "command": "toggle_side_bar" },
 	{ "keys": ["ctrl+w"], "command": "toggle_setting", "args": {"setting": "word_wrap"}},
 
 	// emmet expand with ctrl+e
+	{ "keys": ["ctrl+e"], "command": "emmet_expand_abbreviation" },
+
+	// replicate old emmet functionality (ish) in jsx files
 	{
-		"keys": ["ctrl+e"],
-		"command": "emmet_expand_abbreviation"
+	    "keys": ["tab"],
+	    "command": "emmet_expand_abbreviation",
+	    "context": [
+
+	    	// run only if there's no selected text, and no autocomplete 
+	        { "key": "selection_empty" },
+	        { "key": "auto_complete_visible", "operand": false },
+
+	        // 'meta.jsx.js' within jsx tags
+	        { "key": "selector", "operand": "meta.jsx - string - comment", "operator": "equal", "match_all": true }, 
+	        
+	        // text preceding cursor is:
+	        // • html, svg, custom component tag, or ComponentName (starts with capital letter)
+	        // • with an optional .classname or #id selector
+		    // or simply just a selector, when:
+		    // • used near a tag ('>' character), 
+		    // • or whitespace from the start of the line (^\s*)
+    	    {
+			  "key": "preceding_text",
+			  "operator": "regex_contains",
+			  "operand": "(a|abbr|acronym|address|applet|area|article|aside|audio|b|base|basefont|bdi|bdo|bgsound|big|blink|blockquote|body|br|button|canvas|caption|center|cite|code|col|colgroup|command|content|data|datalist|dd|del|details|dfn|dialog|dir|div|dl|dt|element|em|embed|fieldset|figcaption|figure|font|footer|form|frame|frameset|head|header|hgroup|hr|html|i|iframe|image|img|input|ins|isindex|kbd|keygen|label|legend|li|link|listing|main|map|mark|marquee|menu|menuitem|meta|meter|multicol|nav|nobr|noembed|noframes|noscript|object|ol|optgroup|option|output|p|param|picture|plaintext|pre|progress|q|rp|rt|rtc|ruby|s|samp|script|section|select|shadow|small|source|spacer|span|strike|strong|style|sub|summary|sup|table|tbody|td|template|textarea|tfoot|th|thead|time|title|tr|track|tt|u|ul|var|video|wbr|xmp|[a-z]+-[a-z-]+[a-z]|[A-Z]\\w+)([\\.#][\\w-]+)*$|(^|>)\\s*([\\.#][\\w-]+)+$",
+	        }
+	    ]
 	},
 
 	// add sublime’s built-in tag closer to jsx using `</`
-	{ "keys": ["<", "/"], "command": "close_tag", "args": { "insert_slash": true }},
-
-	// emmet 2 – restore old behaviour, from: https://github.com/emmetio/sublime-text-plugin#i-dont-like-new-behavior-with-abbreviation-capturing-id-like-to-expand-with-tab-as-earlier
-	{
-	    "keys": ["tab"],
-	    "command": "emmet_expand_abbreviation",
-	    "args": { "tab": true },
-	    "context": [
-	        { "key": "emmet_capture_abbreviation" },
-	        { "key": "selection_empty" },
-	        { "key": "has_next_field", "operand": false },
-	        { "key": "auto_complete_visible", "operand": false },
-	        // removed 'source'
-	        { "key": "selector", "operand": "source.css, source.sass, source.less, source.scss, source.stylus, source.postcss, source.jade, text.jade, source.pug, text.pug, text.slim, text.xml, text.html - text.haml, text.scala.html, source string" }
-	    ]
-	},
-
-	// emmet 2 – allow in js files when auto complete not open
-	{
-	    "keys": ["tab"],
-	    "command": "emmet_expand_abbreviation",
-	    "args": { "tab": true },
-	    "context": [
-
-	    	// don't init on tab stops or empty line (default emmet behaviour makes cursor jump around)
-	    	{ "key" : "preceding_text", "operator" : "not_regex_match", "operand" : "^\\s*$" },
-
-	    	// standard emmet context, with has_next_field removed
-	    	{ "key": "emmet_capture_abbreviation" },
-	        { "key": "selection_empty" },
-	        { "key": "auto_complete_visible", "operand": false },
-	        { "key": "selector", "operand": "source.js" }
-	    ]
-	},
+	{ 
+		"keys": ["<", "/"], 
+		"command": "close_tag", 
+		"args": { "insert_slash": true },
+		"context": [
+			{ "key": "selector", "operator": "equal", "operand": "meta.jsx - string - comment", "match_all": true },
+		]
+	}
 ]

@@ -1,0 +1,9 @@
+{
+	"telemetry": false,
+	"auto_mark": "markup",
+	"abbreviation_preview": "markup",
+	"jsx_prefix": false,
+	"ignore_scopes": [
+		"source.jsx", "source.js", "source.tsx", "source.ts"
+	]
+}
