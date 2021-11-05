@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function current_shell() {
-    echo $(ps -p $$ | awk '{if(NR>1)print}' | awk '$0=$NF' | tr -d -)
+    echo $(ps -cp $$ -o command | tail -1 | tr -d -)
 }
 
 export DOTFILES="$( cd "$( dirname "${BASH_SOURCE[0]:-${(%):-%x}}" )" && pwd )"

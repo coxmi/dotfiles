@@ -15,14 +15,14 @@ function ssh_list_hosts() {
 	local sshIncludedPaths=$(grep "^Include" $CONFIG | cut -d " " -f 2)
 
 	# expand any file globs using eval to get all config file paths, 
-	local paths=$(eval "print $sshIncludedPaths") 2> /dev/null
+	local paths=$(eval "echo $sshIncludedPaths") 2> /dev/null
 
 	# find any Host directives
 	# remove any `Host *` entries
 	# cut string on " " delimeter, list 2nd entry (without "Host" word)
 	# replace spaces with newlines
 	local sshHosts="$(
-		grep --ignore-case --no-filename "^Host" $(print $paths) \
+		grep --ignore-case --no-filename "^Host" $(echo $paths) \
 		| grep --invert-match "[?*]" \
 		| cut -d " " -f 2
 	)"
