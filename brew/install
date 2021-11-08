@@ -22,7 +22,7 @@ set -eu
         google-chrome
         firefox
         transmit
-        bettertouchtool
+        rectangle
         spotify
         vlc
         transmission
