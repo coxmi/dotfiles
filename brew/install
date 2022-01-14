@@ -43,6 +43,7 @@ set -eu
         qlprettypatch
         quicklook-csv
         qlimagesize
+        mdimagesizemdimporter
         webpquicklook
         quicklookase
         qlvideo
@@ -76,3 +77,4 @@ set -eu
     brew install --cask sublime-text --appdir=/Applications
 
     sublime-update-prefs
+    sublime-icon

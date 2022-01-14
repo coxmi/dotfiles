@@ -22,12 +22,15 @@ function youtube-dl() {
 }
 
 
+# sublime 
+
 function sublime-update-prefs() {
 	# move prefs into place
 	mkdir -p ~/Library/Application\ Support/Sublime\ Text
 	cp -af $DOTFILES/brew/sublime/Library/. ~/Library/Application\ Support/Sublime\ Text
+}
 
-	# replace icon
+function sublime-icon() {
 	rm -f /Applications/Sublime\ Text.app/Contents/Resources/Sublime\ Text.icns
 	cp -f $DOTFILES/brew/sublime/Sublime\ Text.icns /Applications/Sublime\ Text.app/Contents/Resources/Sublime\ Text.icns
 }

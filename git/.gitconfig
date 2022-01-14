@@ -3,6 +3,7 @@
 	name = Michael Cox
 [core]
 	excludesfile = /Users/michael/.gitignore_global
+	attributesfile = /Users/michael/.gitattributes
 [difftool "sourcetree"]
 	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
 	path = 
