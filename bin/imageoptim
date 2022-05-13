@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# input
+	input=${$1:-.}
+	
+	# jpg/jpeg
+	find $input -type f -regex '.*\.jpe?g$' -exec jpegoptim --max=95 --all-progressive -p {} \;
+	
+	#png
+	find $input -type f -iname *.png -exec optipng -strip all -preserve -o5 {} \;

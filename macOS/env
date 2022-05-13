@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+alias 'darkmode=defaults delete -g NSRequiresAquaSystemAppearance; osascript -e "tell application \"System Events\" to set dark mode of appearance preferences to true"'
+alias 'lightmode=defaults delete -g NSRequiresAquaSystemAppearance; osascript -e "tell application \"System Events\" to set dark mode of appearance preferences to false"'
+alias 'mixedmode=defaults write -g NSRequiresAquaSystemAppearance -bool yes; osascript -e "tell application \"System Events\" to set dark mode of appearance preferences to true"'
