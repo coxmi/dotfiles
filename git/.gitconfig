@@ -1,12 +1,8 @@
-[user]
-	email = michael@se-make.co.uk
-	name = Michael Cox
 [core]
-	excludesfile = /Users/michael/.gitignore_global
-	attributesfile = /Users/michael/.gitattributes
-[difftool "sourcetree"]
-	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
-	path = 
-[mergetool "sourcetree"]
-	cmd = /Applications/SourceTree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
-	trustExitCode = true
+	excludesfile = ~/.gitignore_global
+	attributesfile = ~/.gitattributes
+	pager = less -F -S -R -i -+X
+[init]
+	defaultBranch = main
+[alias]
+	graph = log --graph --all --decorate --oneline
