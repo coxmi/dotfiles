@@ -35,7 +35,7 @@ out=$(basename "$in" ".pdf")-compressed.pdf
 gs \
 	-dNOPAUSE \
 	-dQUIET -dBATCH -dSAFER \
-	-dSimulateOverprint=true \
+	-dOverprint=/enable \
 	-sDEVICE=pdfwrite \
 	-dPDFSETTINGS=/ebook \
 	-dCompatibilityLevel=1.4 \
