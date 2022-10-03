@@ -1,6 +1,12 @@
 #!/usr/bin/env bash
 
 
+# actually clear the terminal
+function clear {
+	command clear && printf '\e[3J'
+}
+
+
 # rename terminal tab
 function tabname {
 	printf "\e]1;$1\a"
