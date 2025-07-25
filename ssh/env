@@ -22,12 +22,22 @@ function ssh_list_hosts() {
 	# cut string on " " delimeter, list 2nd entry (without "Host" word)
 	# replace spaces with newlines
 	local sshHosts="$(
-		grep --ignore-case --no-filename "^Host" $(echo $paths) \
+		grep --ignore-case --no-filename "^Host" "$CONFIG" $(echo $paths) \
 		| grep --invert-match "[?*]" \
 		| cut -d " " -f 2
 	)"
 
 	echo $sshHosts | tr ' ' '\n'
+}
+
+function ssh_fingerprints() {
+
+	ls ~/.ssh | grep ".pub$" | while read line 
+	do
+		echo "$line:"
+		ssh-keygen -l -E md5 -f $line
+		echo "";
+	done
 }
 
 
@@ -36,6 +46,8 @@ function ssh_list_hosts() {
 function ssh() {
   case $* in
     hosts* ) shift 1; ssh_list_hosts "$@" ;;
+	fingerprints* ) shift 1; ssh_fingerprints ;;
+	keys* ) shift 1; ssh_fingerprints ;;
     * ) command ssh "$@" ;;
   esac
 }

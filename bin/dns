@@ -54,6 +54,7 @@
 		fi
 
 		canonical_record="$(dns_canonical $domain)" || { 
+			echo $domain
 			echo "No canonical record found for $domain"
 			return 1 
 		}
