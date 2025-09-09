@@ -1,14 +1,18 @@
 #!/usr/bin/env bash
 
-# bash "strict mode"
 set -eu
+source ./deps
 
-# check if macOS is running
 
-    if test "$(uname)" != "Darwin"; then
-        message fail "OS must be macOS"
+# Check for install
+
+    HOMEBREW_PREFIX=$(getHomebrewPrefix)
+    if [ -d "$HOMEBREW_PREFIX" ]; then 
+        PATH=$PATH:$HOMEBREW_PREFIX/bin; 
+    else 
+        message info "brew not installed, skipping installation of apps"
         exit 0
-    fi
+    fi;
 
 
 # Install apps
@@ -16,65 +20,66 @@ set -eu
     message info "Installing apps, fonts & quicklook plugins…"
 
     apps=(
-        sourcetree
-        sequel-pro
-        virtualbox
         google-chrome
         firefox
+        sourcetree
         transmit
         rectangle
-        spotify
         vlc
         transmission
         macdown
-        dropbox
     )
 
-    brew install --cask "${apps[@]}" --appdir=/Applications
+    brew install --cask --no-quarantine "${apps[@]}" --appdir=/Applications
 
 
 # Install QuickLook plugins (https://github.com/sindresorhus/quick-look-plugins)
 
     ql=(
-        qlcolorcode
-        qlstephen
-        qlmarkdown
-        quicklook-json
-        qlprettypatch
+        # these are now handled by the syntax-highlight cask
+        # qlstephen
+        # qlmarkdown
+        # quicklook-json
+        # qlprettypatch
         quicklook-csv
-        qlimagesize
-        mdimagesizemdimporter
         webpquicklook
         quicklookase
-        qlvideo
-        quicklook-pat
     )
 
-    brew install --cask "${ql[@]}"
+    brew install --no-quarantine "${ql[@]}"
+
+    qlcask=(
+        syntax-highlight
+        qlmarkdown
+        qlvideo
+    )
+
+    brew install --cask --no-quarantine "${qlcask[@]}"
 
 
 # Install utilities
 
     utilities=(
-        youtube-dl
         ffmpeg
         gifski
     )
 
-    brew install ${utilities[@]}
+    brew install --no-quarantine ${utilities[@]}
 
 
 # Install fonts
 
     fonts=(
-      font-ibm-plex
+      font-ibm-plex-mono
+      font-ibm-plex-sans
+      font-ibm-plex-serif
     )
-    brew install --cask ${fonts[@]}
+    brew install --cask --no-quarantine ${fonts[@]}
 
 
 # Sublime
 
-    brew install --cask sublime-text --appdir=/Applications
+    brew install --cask --no-quarantine sublime-text --appdir=/Applications
 
     sublime-update-prefs
     sublime-icon

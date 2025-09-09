@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+function getHomebrewPrefix() {
+    homebrew_prefix_candidates=(
+        /usr/local
+        /opt/homebrew
+        /home/linuxbrew/.linuxbrew
+    )
+    for p in "${homebrew_prefix_candidates[@]}"
+    do
+        [[ -d "${p}" ]] || continue
+        [[ -d "${p}/.git" || -x "${p}/bin/brew" ]] && echo "${p}" && break
+    done
+}

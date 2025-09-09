@@ -1,39 +1,32 @@
 #!/usr/bin/env bash
 
-# bash "strict mode"
 set -eu
+source ./deps
 
-# check if macOS is running
 
-    if test "$(uname)" != "Darwin"; then
-        message fail "OS must be macOS"
-        exit 0
-    fi
+# Install brew
 
-# Install homebrew
-
-    if ! [ -x $(command -v brew) ]; then
+    HOMEBREW_PREFIX=$(getHomebrewPrefix)
+    if [ -d "$HOMEBREW_PREFIX" ]; then
+        message info "brew is already installed, skipping…"
+    else
         message info "Installing brew"
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    else
-        message info "brew is already installed, skipping…"
-        HOMEBREW_PREFIX=$(brew --prefix)
-    fi;
+        HOMEBREW_PREFIX=$(getHomebrewPrefix)
+        PATH=$PATH:$HOMEBREW_PREFIX/bin
+    fi;    
+    
+
+# update and turn off analytics
 
     message info "brew updating…"
-    $HOMEBREW_PREFIX/bin/brew update --quiet
-    $HOMEBREW_PREFIX/bin/brew upgrade --quiet
+    brew update --quiet
+    brew upgrade --quiet
+    message info "brew disable analytics…"
     brew analytics off
 
 
 # Install brew utilities
 
-    message info "Installing brew utilities…"
-    $HOMEBREW_PREFIX/bin/brew install coreutils --quiet
-    $HOMEBREW_PREFIX/bin/brew tap homebrew/cask --quiet
-    $HOMEBREW_PREFIX/bin/brew tap homebrew/cask-fonts --quiet
-
-
-# shell env path
-
-    eval "$($HOMEBREW_PREFIX/bin/brew shellenv)"
+    message info "installing brew utilities…"
+    brew install coreutils --quiet

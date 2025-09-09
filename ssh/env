@@ -45,10 +45,10 @@ function ssh_fingerprints() {
 
 function ssh() {
   case $* in
-    hosts* ) shift 1; ssh_list_hosts "$@" ;;
+	hosts* ) shift 1; ssh_list_hosts "$@" ;;
 	fingerprints* ) shift 1; ssh_fingerprints ;;
 	keys* ) shift 1; ssh_fingerprints ;;
-    * ) command ssh "$@" ;;
+	* ) command ssh "$@" ;;
   esac
 }
 
