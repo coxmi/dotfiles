@@ -11,11 +11,12 @@ SUB_COMMAND_NAME=$2
 		echo "Usage: $BIN_NAME <command>"
 		echo
 		echo "Commands:"
-		echo "-  files     Copies dotfiles (\${folder}/.*) to ~ if they don’t already exist"
-		echo "-  install   Runs all installers (\${folder}/install)"
-		echo "-  macOS     Apply macOS system defaults (requires reboot)"
-		echo "-  dock      Empty dock on macOS"
-		echo "-  help      This help message"
+		echo "-  files       Copies dotfiles (\${folder}/.*) to ~ if they don’t already exist"
+		echo "-  install     View list of install scripts at (\${folder}/install)"
+		echo "-  install <x> Run install script"
+		echo "-  macOS       Apply macOS system defaults (requires reboot)"
+		echo "-  dock        Empty dock on macOS"
+		echo "-  help        This help message"
 	}
 
 
@@ -45,11 +46,9 @@ SUB_COMMAND_NAME=$2
 	}
 
 	sub_files() {
-
 		message info "copying dotfiles (~/dotfiles/\${folder}/.*) to ~"
-
 		for src in $(find -H "$DOTFILES" -mindepth 2 -maxdepth 2 -name '.*' ! -path '*/.git/*' ! -name '*.DS_Store'); do
-			dest="$HOME/$(basename $src)"
+			local dest="$HOME/$(basename $src)"
 			copy_file "$src" "$dest"
 	  	done
 	}
@@ -58,30 +57,55 @@ SUB_COMMAND_NAME=$2
 # command: install
 
 	sub_install() {
+		local toInstall=$1
+		if [ -z "$toInstall" ]; then
+			# no arg, list installers
+			echo 'Use: dotfiles install <installer>, with:';
+			list_install_scripts
+		else
+			# arg exists
+			if test $(find -H "$DOTFILES/$toInstall" -depth 1 -name 'install' 2> /dev/null | wc -c) -eq 0; then
+				# no installers found
+				echo "No installer found called \`$toInstall\`, use with:"
+				list_install_scripts
+			else
+				# Ask for the administrator password upfront, and keep alive
+				# (update existing `sudo` time stamp until we're finished)
+				sudo -v
+				while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
-		message info "running all installers (~/dotfiles/\${folder}/install)…"
 
-		# Ask for the administrator password upfront
-		sudo -v
+				# found installer, run scripts
+				local preinstaller="$DOTFILES/$toInstall/preinstall"
+				local installer="$DOTFILES/$toInstall/install"
+				local postinstaller="$DOTFILES/$toInstall/postinstall"
 
-		# Keep-alive: update existing `sudo` time stamp until we're finished
-		while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
+				if [ -e $preinstaller ]; then
+					${preinstaller} && message success "$preinstaller completed" || message fail "$preinstaller failed"
+				fi
 
-		# Run preinstallers
-		for installer in $(find -H "$DOTFILES" -mindepth 2 -maxdepth 2 -name 'preinstall'); do
-			bash $installer && message success "$installer completed" || message fail "$installer failed"
-	  	done
+				if [ -e $installer ]; then
+					${installer} && message success "$installer completed" || message fail "$installer failed"
+				fi
 
-		# Run installers
-		for installer in $(find -H "$DOTFILES" -mindepth 2 -maxdepth 2 -name 'install'); do
-			bash $installer && message success "$installer completed" || message fail "$installer failed"
-	  	done
-
-	  	# Run postinstallers
-		for installer in $(find -H "$DOTFILES" -mindepth 2 -maxdepth 2 -name 'postinstall'); do
-			bash $installer && message success "$installer completed" || message fail "$installer failed"
-	  	done
+				if [ -e $postinstaller ]; then
+					${postinstaller} && message success "$postinstaller completed" || message fail "$postinstaller failed"
+				fi
+			fi
+		fi
 	}
+
+	list_install_scripts() {
+		for installer in $(find -H "$DOTFILES" -mindepth 2 -maxdepth 2 -name 'install' | sort); do
+			local name=${installer/#"$DOTFILES"}
+			local prefix="$DOTFILES/"
+			local suffix="/install"
+			name=${installer#"$prefix"}
+			name=${name%"$suffix"}
+			echo "• $name"
+		done
+	}
+
 
 
 # command: macOS

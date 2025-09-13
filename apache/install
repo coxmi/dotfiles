@@ -1,26 +1,31 @@
 #!/usr/bin/env bash
-
+    
 # remove old Apache versions, and install fresh
 
     HOMEBREW_PATH=$(brew --prefix)
     DIR="$( cd "$( dirname "${BASH_SOURCE[0]:-${(%):-%x}}" )" && pwd )"
 
     # remove brew-installed apache
+    echo "Stop existing httpd services"
     brew services stop httpd &> /dev/null
     sudo brew services stop httpd &> /dev/null
     brew remove httpd --force &> /dev/null
     brew unlink httpd &> /dev/null
+    
+    echo "Delete old installations…"
     sudo rm -rf "$(brew --cellar httpd)" &> /dev/null
 
     # stop built-in apache from running
+    echo 'Stop built-in apache'
     sudo /usr/sbin/apachectl stop &> /dev/null
     sudo launchctl unload -w /System/Library/LaunchDaemons/org.apache.httpd.plist &> /dev/null
 
-    # set bail early, and install
-    set -eu
-    brew install httpd lynx
-    brew services start httpd
 
+# set bail early (after stop commands), and install
+
+    set -eu
+    brew install httpd
+    brew services start httpd
 
 # configure
     
@@ -29,7 +34,7 @@
     sslconf="$HOMEBREW_PATH/etc/httpd/extra/httpd-ssl.conf"
 
     # listen on port 80
-    sed -i '' 's/^Listen 8080/Listen 80/' $apacheconf
+    # sed -i '' 's/^Listen 8080/Listen 8080/' $apacheconf
 
     # move document root
     sed -i '' "s|^DocumentRoot \"$HOMEBREW_PATH/var/www\"|DocumentRoot \"$HOME/Projects/localhost\"|g" $apacheconf
@@ -62,10 +67,10 @@
     sed -i '' 's|^ *#LoadModule *socache_shmcb_module|LoadModule socache_shmcb_module|g' $apacheconf
     sed -i '' 's|^ *#Include\(.*\/\)httpd-ssl.conf|Include\1httpd-ssl.conf|g' $apacheconf
 
-    sed -i '' 's|^Listen 8443|Listen 443|g' $sslconf
-    sed -i '' 's|<VirtualHost _default_:8443>|<VirtualHost _default_:443>|g' $sslconf
+    # sed -i '' 's|^Listen 8443|Listen 443|g' $sslconf
+    # sed -i '' 's|<VirtualHost _default_:8443>|<VirtualHost _default_:443>|g' $sslconf
     sed -i '' "s|^DocumentRoot \"$HOMEBREW_PATH/var/www\"|DocumentRoot \"$HOME/Projects/localhost\"|g" $sslconf
-    sed -i '' 's|^ServerName.*|ServerName localhost:443|g' $sslconf
+    # sed -i '' 's|^ServerName.*|ServerName localhost:443|g' $sslconf
 
     mkdir -p $HOME/Projects/localhost
 
@@ -95,4 +100,5 @@
     
 
 # restart apache
+echo 'Restarting apache'
 sudo apachectl -k restart

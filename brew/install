@@ -28,6 +28,7 @@ source ./deps
         vlc
         transmission
         macdown
+        hiddenbar
     )
 
     brew install --cask --no-quarantine "${apps[@]}" --appdir=/Applications
