@@ -8,9 +8,9 @@
 
 
 # install
-	# set -eu
-	# brew install curl php autoconf
-	# xdebug=$( pecl install xdebug ) || message fail "xdebug" && echo "$xdebug"
+	set -eu
+	brew install curl autoconf php
+	xdebug=$( pecl install xdebug ) || message fail "xdebug" && echo "$xdebug"
 
 
 # configure
@@ -28,7 +28,7 @@
 
     # add php handler if no matches
     if ! grep 'SetHandler.*application/x-httpd-php' $apacheconf > /dev/null ; then
-	    echo "<FilesMatch .php$>\n\tSetHandler application/x-httpd-php\n</FilesMatch>" >> $apacheconf
+	    printf "<FilesMatch \.php$>\n\tSetHandler application/x-httpd-php\n</FilesMatch>" >> $apacheconf
     fi;
 
 
