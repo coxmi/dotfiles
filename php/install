@@ -9,8 +9,8 @@
 
 # install
 	set -eu
-	brew install curl autoconf php
-	xdebug=$( pecl install xdebug ) || message fail "xdebug" && echo "$xdebug"
+	brew install curl php
+	pecl install xdebug
 
 
 # configure
