@@ -11,11 +11,13 @@ function ssh_list_hosts() {
 		return;
 	fi
 
-	# get references to Included ssh config files, if any
-	local sshIncludedPaths=$(grep "^Include" $CONFIG | cut -d " " -f 2)
-
-	# expand any file globs using eval to get all config file paths, 
-	local paths=$(eval "echo $sshIncludedPaths") 2> /dev/null
+	local paths=$(
+		for p in $(grep "^Include" $CONFIG | cut -d " " -f 2); do
+				tildeExpansion="${p/#\~/$HOME}"
+				foundPaths=$(compgen -G `echo $tildeExpansion`)
+				echo $foundPaths
+		done
+	)
 
 	# find any Host directives
 	# remove any `Host *` entries
@@ -35,7 +37,7 @@ function ssh_fingerprints() {
 	ls ~/.ssh | grep ".pub$" | while read line 
 	do
 		echo "$line:"
-		ssh-keygen -l -E md5 -f $line
+		ssh-keygen -l -E md5 -f ~/.ssh/$line | cut -d " " -f1-2
 		echo "";
 	done
 }
