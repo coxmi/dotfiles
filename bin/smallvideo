@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# usage smallvideo videofile.mp4 (res:1080) (quality:1-51, 1 is high) (includeaudio:1|0)
+
+# bash "strict mode"
+set -eu
+
 # input
 	input=$1
 	size=${2:-1080}
@@ -11,18 +16,10 @@
 	inputNameWithoutExtension=${input%.*}
 	timestamp="$(date +%s)"
 	[[ $audio == 1 ]] && audioString="audio" || audioString="noaudio";
-	outfile="./tmp/${inputNameWithoutExtension}-${size}-q${crf}-${audioString}-${timestamp}.${extension}"
-
-# setup
-	mkdir -p ./tmp
+	outfile="./${inputNameWithoutExtension}-${size}-q${crf}-${audioString}-${timestamp}.${extension}"
 
 # sets audioArg based on $audio boolean
 [[ $audio == 1 ]] && audioArg="" || audioArg="-an";
-
-# testArg="\
-# 	-ss 00:00:00 \
-# 	-t 00:00:5 \
-# "
 
 ffmpeg \
 	-i $input \
@@ -36,5 +33,6 @@ ffmpeg \
 	-hide_banner -stats \
 	"$outfile";
 
+echo "created $outfile";
 
 # -vf scale=-2:720 = -2 is for even number of pixels, -1 allows odd number
