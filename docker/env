@@ -2,3 +2,11 @@
 
 alias dock='lazydocker'
 alias d='lazydocker'
+
+function drun() {
+	local name="runner"
+	local image=$(docker build -q -t $name .)	
+	docker run --rm --name "$name" $@ -it $image
+	echo 'removing runner image…'
+	docker image rm "$name"
+}
