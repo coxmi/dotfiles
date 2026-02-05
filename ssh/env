@@ -42,6 +42,16 @@ function ssh_fingerprints() {
 	done
 }
 
+function ssh_public_keys() {
+
+	ls ~/.ssh | grep ".pub$" | while read line 
+	do
+		echo "$line:"
+		cat ~/.ssh/$line
+		echo "";
+	done
+}
+
 
 # `ssh hosts` command
 
@@ -49,14 +59,16 @@ function ssh() {
   case $* in
 	hosts* ) shift 1; ssh_list_hosts "$@" ;;
 	fingerprints* ) shift 1; ssh_fingerprints ;;
-	keys* ) shift 1; ssh_fingerprints ;;
+	keys* ) shift 1; ssh_public_keys ;;
 	* ) command ssh "$@" ;;
   esac
 }
 
 
-# auto complete ssh hosts and ssh hosts command for bash
+# autoload complete functions for zsh
+autoload -U +X bashcompinit && bashcompinit
+autoload -U +X compinit && compinit
 
-if [ -n "$BASH_VERSION" ]; then
-	complete -o "default" -o "nospace" -W "$(ssh_list_hosts) hosts" scp sftp ssh;
-fi
+
+# auto complete ssh hosts command for bash/zsh
+complete -o "default" -o "nospace" -W "hosts keys fingerprints $(ssh_list_hosts)" scp sftp ssh;	
