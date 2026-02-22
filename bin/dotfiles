@@ -22,15 +22,6 @@ SUB_COMMAND_NAME=$2
 
 # command: files
 
-	copy_file() {
-		if ! [ -e "$2" ]; then
-			cp "$1" "$2"
-			message success "copied $1 to $2"
-		else
-			message info "file $2 already exists"
-		fi
-	}
-
 	link_file() {
 		if [ -e "$2" ]; then
 			if [ "$(readlink "$2")" = "$1" ]; then
@@ -46,11 +37,43 @@ SUB_COMMAND_NAME=$2
 	}
 
 	sub_files() {
-		message info "copying dotfiles (~/dotfiles/\${folder}/.*) to ~"
-		for src in $(find -H "$DOTFILES" -mindepth 2 -maxdepth 2 -name '.*' ! -path '*/.git/*' ! -name '*.DS_Store'); do
-			local dest="$HOME/$(basename $src)"
-			copy_file "$src" "$dest"
-	  	done
+	    message info "copying dotfiles ($DOTFILES/{folder}/.*) to ~"
+
+	    # Use find to locate files AND directories, excluding unwanted stuff
+	    find -H "$DOTFILES" \
+		    -name '.*' \
+	    	-mindepth 2 \
+	    	-maxdepth 2 \
+	        ! -path '*/.git/*' \
+	        ! -name '*.DS_Store' | while read -r src; do
+	       	
+	       	relativeSrc="${src#$HOME/}"
+	        # Strip the DOTFILES prefix and the first folder name, e.g.:
+            # ~/dotfiles/vim/.vimrc -> ~/.vimrc
+            # ~/dotfiles/vim/.config/nvim -> ~/.config/nvim
+            relativeDest="${src#$DOTFILES/}"
+            relativeDest="${relativeDest#*/}"
+	        dest="$HOME/$relativeDest"
+
+	        if [ -d "$src" ]; then
+	        	if ! [ -d "$dest" ]; then
+		        	mkdir -p "$dest"
+					cp -R "$src/"* "$dest/" \
+						&& message success "copied $relativeSrc to ~/$relativeDest" \
+						|| message fail "copy $relativeSrc to ~/$relativeDest failed"
+	        	else
+	        		message info "file $dest already exists"
+	        	fi
+	        else
+	        	if ! [ -e "$dest" ]; then
+	        		cp "$src" "$dest" \
+		        		&& message success "copied $relativeSrc to ~/$relativeDest" \
+		        		|| message fail "copy $relativeSrc to ~/$relativeDest failed"
+	        	else
+	        		message info "file $dest already exists"
+	        	fi
+	        fi
+	    done
 	}
 
 
