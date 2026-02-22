@@ -1,16 +1,15 @@
-" enable syntax highlighting
-syntax on
-set regexpengine=0
 
-" encoding
-set nocompatible
-set encoding=utf-8
-set fileencodings=utf-8,latin1
+" behaviour
 set backspace=indent,eol,start
 set history=1000
-set lazyredraw
+set scrolloff=1
+set scrolljump=1
+" set lazyredraw
+" set regexpengine=0
+nnoremap <C-D> 1j
+nnoremap <C-U> 1k
 
-" loads filetype-specific plugins
+" plugins
 filetype plugin on
 filetype indent on
 
@@ -33,18 +32,14 @@ set softtabstop=4
 set smartindent
 
 " enable bold/italic in supported terminals
-set t_Co=256
-set t_Sb=^[[4:3m
-set t_Sf=^[[5:3m
+" set t_Co=256
+" set t_Sb=^[[4:3m
+" set t_Sf=^[[5:3m
 
 " no backup files on disk
 set nobackup
 set nowritebackup
 set noswapfile
 
-" security (encryption)
-set cm=blowfish2
-
 " Do not store viminfo
 set viminfo=
-

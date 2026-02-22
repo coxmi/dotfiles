@@ -37,6 +37,7 @@ SUB_COMMAND_NAME=$2
 	}
 
 	sub_files() {
+		echo $1
 	    message info "copying dotfiles ($DOTFILES/{folder}/.*) to ~"
 
 	    # Use find to locate files AND directories, excluding unwanted stuff
@@ -56,21 +57,21 @@ SUB_COMMAND_NAME=$2
 	        dest="$HOME/$relativeDest"
 
 	        if [ -d "$src" ]; then
-	        	if ! [ -d "$dest" ]; then
+	        	if [[ ! -d "$dest" || "$1" == "--force" ]]; then
 		        	mkdir -p "$dest"
 					cp -R "$src/"* "$dest/" \
 						&& message success "copied $relativeSrc to ~/$relativeDest" \
 						|| message fail "copy $relativeSrc to ~/$relativeDest failed"
 	        	else
-	        		message info "file $dest already exists"
+	        		message info "folder $dest already exists (use --force to overwrite)"
 	        	fi
 	        else
-	        	if ! [ -e "$dest" ]; then
+	        	if [[ ! -e "$dest" || "$1" == "--force" ]]; then
 	        		cp "$src" "$dest" \
 		        		&& message success "copied $relativeSrc to ~/$relativeDest" \
 		        		|| message fail "copy $relativeSrc to ~/$relativeDest failed"
 	        	else
-	        		message info "file $dest already exists"
+	        		message info "file $dest already exists (use --force to overwrite)"
 	        	fi
 	        fi
 	    done
