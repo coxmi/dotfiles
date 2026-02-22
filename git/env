@@ -9,7 +9,7 @@ function git_prompt() {
     branchStatus=$(git_branch_status)
     if [[ -n "$dirtyCount" ]]; then gitStatus+=" ${dirtyCount}"; fi
     if [[ -n "$branchStatus" ]]; then gitStatus+=" $branchStatus"; fi
-    if [[ -n "$gitStatus" ]]; then echo "$gitStatus "; fi
+    if [[ -n "$gitStatus" ]]; then echo "$gitStatus " | tr -s ' '; fi
 }
 
 function git_dirty_count() {
