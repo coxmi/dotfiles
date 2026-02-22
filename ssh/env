@@ -64,11 +64,11 @@ function ssh() {
   esac
 }
 
-
 # autoload complete functions for zsh
-autoload -U +X bashcompinit && bashcompinit
-autoload -U +X compinit && compinit
-
+if [[ -n "$ZSH_VERSION" ]]; then
+   autoload -U +X bashcompinit && bashcompinit
+   autoload -U +X compinit && compinit
+fi
 
 # auto complete ssh hosts command for bash/zsh
 complete -o "default" -o "nospace" -W "hosts keys fingerprints $(ssh_list_hosts)" scp sftp ssh;	
