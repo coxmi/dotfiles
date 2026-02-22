@@ -6,9 +6,10 @@
 	<data>
 	YnBsaXN0MDDUAQIDBAUGBwpYJHZlcnNpb25ZJGFyY2hpdmVyVCR0b3BYJG9iamVjdHMS
 	AAGGoF8QD05TS2V5ZWRBcmNoaXZlctEICVRyb290gAGjCwwTVSRudWxs0w0ODxARElVO
-	U1JHQlxOU0NvbG9yU3BhY2VWJGNsYXNzTxASMCAwIDAuMDIyMzg4NzAyMjUAEAKAAtIU
-	FRYXWiRjbGFzc25hbWVYJGNsYXNzZXNXTlNDb2xvcqIWGFhOU09iamVjdAgRGiQpMjdJ
-	TFFTV11kand+k5WXnKewuLsAAAAAAAABAQAAAAAAAAAZAAAAAAAAAAAAAAAAAAAAxA==
+	U1JHQlxOU0NvbG9yU3BhY2VWJGNsYXNzTxAkMC4xODIxNzk3OTkgMC4xMzk5OTI3MyAw
+	LjI0MTE4NDkyMjIAEAKAAtIUFRYXWiRjbGFzc25hbWVYJGNsYXNzZXNXTlNDb2xvcqIW
+	GFhOU09iamVjdAgRGiQpMjdJTFFTV11kand+paeprrnCys0AAAAAAAABAQAAAAAAAAAZ
+	AAAAAAAAAAAAAAAAAAAA1g==
 	</data>
 	<key>ANSIBlueColor</key>
 	<data>
@@ -141,7 +142,7 @@
 	<key>FontAntialias</key>
 	<true/>
 	<key>FontHeightSpacing</key>
-	<real>1.2</real>
+	<real>1.1000000000000001</real>
 	<key>FontWidthSpacing</key>
 	<integer>1</integer>
 	<key>ProfileCurrentVersion</key>
