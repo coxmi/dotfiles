@@ -25,7 +25,13 @@ if [ -n "$BASH_VERSION" ]; then
 fi
 
 
-# Highlight section titles in man pages
+# Less 
+
+function less() {
+    if [[ $# -eq 0 ]]; then command less;
+    else command bat --style=plain --paging=always "$@";
+    fi
+}
 
 export LESS_TERMCAP_mb=$(printf '\e[01;31m') # enter blinking mode – red
 export LESS_TERMCAP_md=$(printf '\e[01;35m') # enter double-bright mode – bold, magenta
