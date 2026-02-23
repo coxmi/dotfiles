@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
 
-brew install bat
+# modern alternatives to cat / ls
+brew install bat eza

@@ -25,11 +25,29 @@ if [ -n "$BASH_VERSION" ]; then
 fi
 
 
-# Less 
+# shell overrides 
+
+function ls() {
+    if [[ $# -eq 0 ]]; then command eza -ga;
+    else command eza \
+    	-a \
+    	--smart-group \
+    	--group-directories-first \
+    	--git-repos \
+    	--ignore-glob=".DS_Store" \
+    	"$@";
+    fi
+}
+
+function cat() {
+    if [[ $# -eq 0 ]]; then command cat;
+    else command bat --style=plain --paging=never "$@";
+    fi
+}
 
 function less() {
     if [[ $# -eq 0 ]]; then command less;
-    else command bat --style=plain --paging=always "$@";
+    else command bat --style=plain,numbers --paging=always "$@";
     fi
 }
 
