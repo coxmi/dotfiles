@@ -5,7 +5,7 @@ if [[ -n "$BASH_VERSION" ]]; then
    esc2="\]"
    workingDir="\w"
    # alternative symbols: ◆ * ☞ ❯ → λ
-   symbol="◆" 
+   symbol="λ" 
 elif [[ -n "$ZSH_VERSION" ]]; then
    setopt PROMPT_SUBST
    esc1="%{"
@@ -40,7 +40,7 @@ bgBlackLight="${esc1}$(tput setab 0)${esc2}"
 newline=$'\n'
 PS1="${reset}"
 PS1+="${bgBlackLight}${violet}\$(git_prompt)${reset}"
-PS1+="${bgBlack}${magenta}${bold} ${workingDir} ${white}${symbol} ${reset} " 
+PS1+="${bgBlack}${magenta}${bold} ${workingDir} ${reset} ${white}${symbol} " 
 PS1="${newline}$PS1"
 
 PS2="${magenta}→ ${reset}"
