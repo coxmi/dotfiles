@@ -33,13 +33,12 @@ purpleDark="$(tput setaf 18)"
 lilac="$(tput setaf 60)"
 dim="$(tput setaf 238)"
 bgBlack="${esc1}$(tput setab 8)${esc2}"
-bgBlackLight="${esc1}$(tput setab 0)${esc2}"
 
 # Set prompt
 
 newline=$'\n'
 PS1="${reset}"
-PS1+="${bgBlackLight}${violet}\$(git_prompt)${reset}"
+PS1+="${bgBlack}${violet}\$(git_prompt)${reset}"
 PS1+="${bgBlack}${magenta}${bold} ${workingDir} ${reset} ${white}${symbol} " 
 PS1="${newline}$PS1"
 
