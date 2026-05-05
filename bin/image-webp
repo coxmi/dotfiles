@@ -1,0 +1,86 @@
+#!/usr/bin/env bash
+
+# Usage:
+# image-to-webp *.jpg
+# image-to-webp --output out --quality 85 *.jpg
+# image-to-webp --lossless --output out *.jpg
+
+set -euo pipefail
+shopt -s nullglob
+
+OUTDIR=""
+QUALITY=80
+LOSSLESS=0
+
+while [[ "${1:-}" == --* ]]; do
+    case "$1" in
+        --output)
+            OUTDIR="${2:-}"
+            shift 2
+            ;;
+        --quality)
+            QUALITY="${2:-}"
+            shift 2
+            ;;
+        --lossless)
+            LOSSLESS=1
+            shift
+            ;;
+        *)
+            echo "Unknown option: $1"
+            exit 1
+            ;;
+    esac
+done
+
+# Validate quality (only relevant if not lossless)
+if [[ "$LOSSLESS" -eq 0 ]]; then
+    if ! [[ "$QUALITY" =~ ^[0-9]+$ ]] || (( QUALITY < 0 || QUALITY > 100 )); then
+        echo "Invalid quality (0-100): $QUALITY"
+        exit 1
+    fi
+fi
+
+files=("$@")
+
+if (( ${#files[@]} == 0 )); then
+    echo "No images provided"
+    exit 1
+fi
+
+total=${#files[@]}
+done_count=0
+
+if [[ -n "$OUTDIR" ]]; then
+    mkdir -p "$OUTDIR"
+fi
+
+for file in "${files[@]}"; do
+    [[ -f "$file" ]] || continue
+
+    filename="$(basename "$file")"
+    name="${filename%.*}"
+
+    if [[ -n "$OUTDIR" ]]; then
+        out="${OUTDIR}/${name}.webp"
+    else
+        out="${name}.webp"
+    fi
+
+    if [[ "$LOSSLESS" -eq 1 ]]; then
+        if ! magick "$file" -define webp:lossless=true "$out" 2>/dev/null; then
+            echo "Skipping (lossless conversion failed): $file"
+            continue
+        fi
+    else
+        if ! magick "$file" -quality "$QUALITY" "$out" 2>/dev/null; then
+            echo "Skipping (conversion failed): $file"
+            continue
+        fi
+    fi
+
+    done_count=$((done_count + 1))
+    echo "Processed: $file ($done_count/$total)"
+done
+
+echo "Done: $done_count/$total images converted"

@@ -1,0 +1,84 @@
+#!/usr/bin/env bash
+
+# Usage:
+# image-png-trim --axis x --output ./out *.png
+# image-png-trim --axis y --output ./out *.png
+# image-png-trim --axis xy --output ./out *.png
+
+set -euo pipefail
+shopt -s nullglob
+
+axis="xy"
+OUTDIR="."
+
+while [[ "${1:-}" == --* ]]; do
+    case "$1" in
+        --axis)
+            axis="$2"
+            shift 2
+            ;;
+        --output)
+            OUTDIR="$2"
+            shift 2
+            ;;
+        *)
+            echo "Unknown option: $1"
+            exit 1
+            ;;
+    esac
+done
+
+files=("$@")
+
+if (( ${#files[@]} == 0 )); then
+    echo "No images provided"
+    exit 1
+fi
+
+total=${#files[@]}
+done_count=0
+
+if [[ -n "$OUTDIR" ]]; then
+    mkdir -p "$OUTDIR"
+fi
+
+for file in "${files[@]}"; do
+    [[ -e "$file" ]] || continue
+
+    filename=$(basename "$file")
+
+    if [[ "$axis" == "xy" ]]; then
+        magick "$file" -alpha on -trim +repage "$OUTDIR/$filename"
+        done_count=$((done_count + 1))
+        echo "Processed: $file ($done_count/$total)"
+        continue
+    fi
+
+    orig_dims=$(magick identify -format "%w %h" "$file")
+    read -r orig_w orig_h <<< "$orig_dims"
+
+    trimmed_dims=$(magick "$file" -alpha on -trim -format "%w %h %X %Y" info:)
+    read -r width height x y <<< "$trimmed_dims"
+
+    crop_w=$orig_w
+    crop_h=$orig_h
+    offset_x=0
+    offset_y=0
+
+    if [[ "$axis" == "x" ]]; then
+        crop_w=$width
+        offset_x=$x
+    fi
+
+    if [[ "$axis" == "y" ]]; then
+        crop_h=$height
+        offset_y=$y
+    fi
+
+    magick "$file" -alpha on -crop "${crop_w}x${crop_h}+${offset_x}+${offset_y}" +repage "$OUTDIR/$filename"
+
+    done_count=$((done_count + 1))
+    echo "Processed: $file ($done_count/$total)"
+done
+
+echo "Done: $done_count/$total images processed"

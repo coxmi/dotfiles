@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+
+# Usage:
+# image-resize --size 2000 *.jpg
+# image-resize --size 2000 --output out *.jpg
+
+set -euo pipefail
+shopt -s nullglob
+
+SIZE=""
+OUTDIR=""
+
+while [[ "${1:-}" == --* ]]; do
+    case "$1" in
+        --size)
+            SIZE="${2:-}"
+            shift 2
+            ;;
+        --output)
+            OUTDIR="${2:-}"
+            shift 2
+            ;;
+        *)
+            echo "Unknown option: $1"
+            exit 1
+            ;;
+    esac
+done
+
+if [[ -z "$SIZE" ]]; then
+    echo "Missing required flag: --size"
+    exit 1
+fi
+
+files=("$@")
+
+if (( ${#files[@]} == 0 )); then
+    echo "No images provided"
+    exit 1
+fi
+
+total=${#files[@]}
+done_count=0
+
+if [[ -n "$OUTDIR" ]]; then
+    mkdir -p "$OUTDIR"
+fi
+
+for file in "${files[@]}"; do
+    [[ -f "$file" ]] || continue
+
+    filename="$(basename "$file")"
+
+    if [[ -n "$OUTDIR" ]]; then
+        out="${OUTDIR}/${filename}"
+    else
+        out="${SIZE}-${filename}"
+    fi
+
+    if ! dims=$(magick identify -format "%w %h" "$file" 2>/dev/null); then
+        echo "Skipping (identify failed): $file"
+        continue
+    fi
+
+    read -r width height <<< "$dims"
+
+    if [[ -z "${width:-}" || -z "${height:-}" ]]; then
+        echo "Skipping (invalid dimensions): $file"
+        continue
+    fi
+
+    if ! [[ "$width" =~ ^[0-9]+$ && "$height" =~ ^[0-9]+$ ]]; then
+        echo "Skipping (non-numeric dimensions): $file"
+        continue
+    fi
+
+    if (( height > width )); then
+        magick "$file" -resize "x${SIZE}>" "$out"
+    else
+        magick "$file" -resize "${SIZE}x>" "$out"
+    fi
+
+    done_count=$((done_count + 1))
+    echo "Processed: $file ($done_count/$total)"
+done
+
+echo "Done: $done_count/$total images processed"
