@@ -1,16 +1,28 @@
 #!/usr/bin/env bash
 
+# Resizes images using the longest dimension (width vs height)
+
 # Usage:
-# image-resize --size 2000 *.jpg
-# image-resize --size 2000 --output out *.jpg
+# image-resize *.jpg --size 2500
+# image-resize *.jpg --size 2500 --output ./2500 
+
+# to resize a folder of jpgs, ensuring correct colour profile conversion to sRGB, use:
+# image-resize ./* --size 2500 --output ./web && image-srgb ./web/*
+
+# to resize and then convert a folder of pngs to webp, use:
+# image-resize *.png --size 2500 --output ./web && \
+# image-srgb ./web/* && \
+# image-webp ./web/* --output ./webp
 
 set -euo pipefail
 shopt -s nullglob
+trap 'echo "Interrupted"; exit 130' INT
 
 SIZE=""
 OUTDIR=""
+files=()
 
-while [[ "${1:-}" == --* ]]; do
+while (( "$#" )); do
     case "$1" in
         --size)
             SIZE="${2:-}"
@@ -20,9 +32,13 @@ while [[ "${1:-}" == --* ]]; do
             OUTDIR="${2:-}"
             shift 2
             ;;
-        *)
+        -*)
             echo "Unknown option: $1"
             exit 1
+            ;;
+        *)
+            files+=("$1")
+            shift
             ;;
     esac
 done
@@ -31,8 +47,6 @@ if [[ -z "$SIZE" ]]; then
     echo "Missing required flag: --size"
     exit 1
 fi
-
-files=("$@")
 
 if (( ${#files[@]} == 0 )); then
     echo "No images provided"
@@ -49,28 +63,31 @@ fi
 for file in "${files[@]}"; do
     [[ -f "$file" ]] || continue
 
+    dir="$(dirname "$file")"
     filename="$(basename "$file")"
+    name="${filename%.*}"
+    ext="${filename##*.}"
 
     if [[ -n "$OUTDIR" ]]; then
         out="${OUTDIR}/${filename}"
     else
-        out="${SIZE}-${filename}"
+        out="${file}"
     fi
 
     if ! dims=$(magick identify -format "%w %h" "$file" 2>/dev/null); then
-        echo "Skipping (identify failed): $file"
+        echo "resize – failed to read dimensions: $file"
         continue
     fi
 
     read -r width height <<< "$dims"
 
     if [[ -z "${width:-}" || -z "${height:-}" ]]; then
-        echo "Skipping (invalid dimensions): $file"
+        echo "resize – invalid dimensions: $file"
         continue
     fi
 
     if ! [[ "$width" =~ ^[0-9]+$ && "$height" =~ ^[0-9]+$ ]]; then
-        echo "Skipping (non-numeric dimensions): $file"
+        echo "resize – non-numeric dimensions: $file"
         continue
     fi
 
@@ -81,7 +98,7 @@ for file in "${files[@]}"; do
     fi
 
     done_count=$((done_count + 1))
-    echo "Processed: $file ($done_count/$total)"
+    echo "resize: $file ($done_count/$total)"
 done
 
-echo "Done: $done_count/$total images processed"
+echo "resize $SIZE – converted $done_count/$total"

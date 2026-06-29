@@ -1,12 +1,10 @@
 #!/usr/bin/env bash
 
-# Converts to webp
+# converts images to sRGB using a perceptual conversion
 
 # Usage:
-# image-webp *.png
-# image-webp *.png --output ./webp 
-# image-webp *.png --output ./webp --quality 85 
-# image-webp *.png --output ./webp --lossless
+# image-srgb *.jpg
+# image-srgb --output ./srgb *.jpg
 
 # to resize a folder of jpgs, ensuring correct colour profile conversion to sRGB, use:
 # image-resize ./* --size 2500 --output ./web && image-srgb ./web/*
@@ -20,10 +18,8 @@ set -euo pipefail
 shopt -s nullglob
 trap 'echo "Interrupted"; exit 130' INT
 
-QUALITY=80
-LOSSLESS=0
-
 OUTDIR=""
+
 files=()
 
 while (( "$#" )); do
@@ -31,14 +27,6 @@ while (( "$#" )); do
         --output)
             OUTDIR="${2:-}"
             shift 2
-            ;;
-        --quality)
-            QUALITY="${2:-}"
-            shift 2
-            ;;
-        --lossless)
-            LOSSLESS=1
-            shift
             ;;
         -*)
             echo "Unknown option: $1"
@@ -51,15 +39,6 @@ while (( "$#" )); do
     esac
 done
 
-# Validate quality (only relevant if not lossless)
-if [[ "$LOSSLESS" -eq 0 ]]; then
-    if ! [[ "$QUALITY" =~ ^[0-9]+$ ]] || (( QUALITY < 0 || QUALITY > 100 )); then
-        echo "Invalid quality (0-100): $QUALITY"
-        exit 1
-    fi
-fi
-
-# validate images exist
 if (( ${#files[@]} == 0 )); then
     echo "No images provided"
     exit 1
@@ -73,6 +52,7 @@ if [[ -n "$OUTDIR" ]]; then
 fi
 
 for file in "${files[@]}"; do
+
     [[ -f "$file" ]] || continue
 
     dir="$(dirname "$file")"
@@ -81,25 +61,22 @@ for file in "${files[@]}"; do
     ext="${filename##*.}"
 
     if [[ -n "$OUTDIR" ]]; then
-        out="${OUTDIR}/${name}.webp"
+        out="${OUTDIR}/${filename}"
     else
-        out="${dir}/${name}.webp"
+        out="${file}"
     fi
 
-    if [[ "$LOSSLESS" -eq 1 ]]; then
-        if ! magick "$file" -define webp:lossless=true "$out" 2>/dev/null; then
-            echo "webp – lossless conversion failed: $file"
-            continue
-        fi
-    else
-        if ! magick "$file" -quality "$QUALITY" "$out" 2>/dev/null; then
-            echo "webp – conversion failed: $file"
-            continue
-        fi
+    if ! magick "$file" \
+        -intent Perceptual \
+        -profile "/System/Library/ColorSync/Profiles/sRGB Profile.icc" \
+        "$out"
+    then
+        echo "srgb – conversion failed: $file"
+        continue
     fi
 
     done_count=$((done_count + 1))
-    echo "webp: $file ($done_count/$total)"
+    echo "srgb: $file ($done_count/$total)"
 done
 
-echo "webp – converted $done_count/$total"
+echo "srgb – converted $done_count/$total"

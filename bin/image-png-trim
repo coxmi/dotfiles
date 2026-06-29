@@ -1,34 +1,40 @@
 #!/usr/bin/env bash
 
+# trims PNG images to their non-transparent pixels (default --axis xy)
+
 # Usage:
-# image-png-trim --axis x --output ./out *.png
-# image-png-trim --axis y --output ./out *.png
-# image-png-trim --axis xy --output ./out *.png
+# image-png-trim *.png --axis x --output ./out
+# image-png-trim *.png --axis y --output ./out
+# image-png-trim *.png --axis xy --output ./out
 
 set -euo pipefail
 shopt -s nullglob
 
 axis="xy"
-OUTDIR="."
+OUTDIR=""
+files=()
 
-while [[ "${1:-}" == --* ]]; do
+while (( "$#" )); do
     case "$1" in
         --axis)
             axis="$2"
             shift 2
             ;;
         --output)
-            OUTDIR="$2"
+            OUTDIR="${2:-}"
             shift 2
             ;;
-        *)
+        -*)
             echo "Unknown option: $1"
             exit 1
+            ;;
+        *)
+            files+=("$1")
+            shift
             ;;
     esac
 done
 
-files=("$@")
 
 if (( ${#files[@]} == 0 )); then
     echo "No images provided"
@@ -45,12 +51,21 @@ fi
 for file in "${files[@]}"; do
     [[ -e "$file" ]] || continue
 
-    filename=$(basename "$file")
+    dir="$(dirname "$file")"
+    filename="$(basename "$file")"
+    name="${filename%.*}"
+    ext="${filename##*.}"
+
+    if [[ -n "$OUTDIR" ]]; then
+        out="${OUTDIR}/${filename}"
+    else
+        out="${file}"
+    fi
 
     if [[ "$axis" == "xy" ]]; then
-        magick "$file" -alpha on -trim +repage "$OUTDIR/$filename"
+        magick "$file" -alpha on -trim +repage "$out"
         done_count=$((done_count + 1))
-        echo "Processed: $file ($done_count/$total)"
+        echo "png-trim: $file ($done_count/$total)"
         continue
     fi
 
@@ -75,10 +90,10 @@ for file in "${files[@]}"; do
         offset_y=$y
     fi
 
-    magick "$file" -alpha on -crop "${crop_w}x${crop_h}+${offset_x}+${offset_y}" +repage "$OUTDIR/$filename"
+    magick "$file" -alpha on -crop "${crop_w}x${crop_h}+${offset_x}+${offset_y}" +repage "$out"
 
     done_count=$((done_count + 1))
-    echo "Processed: $file ($done_count/$total)"
+    echo "png-trim: $file ($done_count/$total)"
 done
 
-echo "Done: $done_count/$total images processed"
+echo "png-trim – trimmed $done_count/$total"

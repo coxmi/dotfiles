@@ -54,42 +54,62 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
-# validate
+# validate input exists
 if [[ -z "$input" ]]; then
     echo "Missing input file"
     print_usage
 fi
 
-# vars
-extension="mp4"
+if [[ ! -f "$input" ]]; then
+    echo "Input file does not exist: $input"
+    exit 1
+fi
+
+# resolve directory safely
+inputDir="$(cd "$(dirname "$input")" && pwd)"
 filename="$(basename "$input")"
 inputNameWithoutExtension="${filename%.*}"
 
-# resolve input directory (absolute path)
-inputDir="$(cd "$(dirname "$input")" && pwd)"
+# guard against empty filename edge case
+if [[ -z "$inputNameWithoutExtension" ]]; then
+    echo "Invalid input filename"
+    exit 1
+fi
 
+extension="mp4"
 timestamp="$(date +%s)"
 
+# always initialize array (critical under set -u)
+ffmpegArgs=()
+
+ffmpegArgs+=(
+    ffmpeg
+    -i "$input"
+    -c:v libx264
+    -crf "$crf"
+    -preset veryslow
+    -vf "scale=-2:$size"
+)
+
+# audio handling
 if [[ "$audio" = "1" ]]; then
     audioString="audio"
-    audioArgs=()
 else
     audioString="noaudio"
-    audioArgs=(-an)
+    ffmpegArgs+=(-an)
 fi
 
 outfile="${inputDir}/${inputNameWithoutExtension}-${size}-q${crf}-${audioString}-${timestamp}.${extension}"
 
-ffmpeg \
-    -i "$input" \
-    -c:v libx264 \
-    -crf "$crf" \
-    -preset veryslow \
-    -vf "scale=-2:$size" \
-    "${audioArgs[@]}" \
-    -movflags faststart \
-    -loglevel warning \
-    -hide_banner -stats \
+ffmpegArgs+=(
+    -movflags faststart
+    -loglevel warning
+    -hide_banner
+    -stats
     "$outfile"
+)
+
+# run
+"${ffmpegArgs[@]}"
 
 echo "created $outfile"
