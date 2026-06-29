@@ -9,6 +9,7 @@
 
 set -euo pipefail
 shopt -s nullglob
+trap 'echo "Interrupted"; exit 130' INT
 
 axis="xy"
 OUTDIR=""

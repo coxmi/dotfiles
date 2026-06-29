@@ -22,7 +22,6 @@ trap 'echo "Interrupted"; exit 130' INT
 
 QUALITY=80
 LOSSLESS=0
-
 OUTDIR=""
 files=()
 

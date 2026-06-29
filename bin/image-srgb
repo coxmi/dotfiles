@@ -19,7 +19,6 @@ shopt -s nullglob
 trap 'echo "Interrupted"; exit 130' INT
 
 OUTDIR=""
-
 files=()
 
 while (( "$#" )); do
