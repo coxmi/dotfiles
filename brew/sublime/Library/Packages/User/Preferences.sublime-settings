@@ -55,6 +55,7 @@
     "margin": 4,
     "open_files_in_new_window": false,
     "hot_exit": "always",
+    "remember_open_files": true,
     "scroll_past_end": true,
     "show_encoding": true,
     "show_full_path": true,
