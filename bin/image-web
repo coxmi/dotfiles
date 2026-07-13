@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+
+# resize all to 2500 max dimension
+image-resize ./* --size 2500 --output ./web 
+
+# correct colour profile
+image-srgb ./web/*
+
+# convert pngs to webp
+image-webp ./web/*.png 
+
+# delete pngs
+rm -rf ./web/*.png
