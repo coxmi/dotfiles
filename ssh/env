@@ -43,13 +43,16 @@ function ssh_fingerprints() {
 }
 
 function ssh_public_keys() {
-
-	ls ~/.ssh | grep ".pub$" | while read line 
-	do
-		echo "$line:"
-		cat ~/.ssh/$line
-		echo "";
-	done
+    for key in ~/.ssh/*.pub
+    do
+        filename=$(basename "$key")
+        fingerprint=$(ssh-keygen -l -E md5 -f "$key" | cut -d " " -f1-2)
+        echo ""
+        printf "\033[1m%s\033[0m " "$filename"
+        echo ""
+        cat "$key"
+        printf "\033[2m%s\033[0m\n" "$fingerprint"
+    done
 }
 
 
