@@ -1,14 +1,63 @@
 #!/usr/bin/env bash
 
+# resizes, converts to sRGB, then converts pngs to webp
 
-# resize all to 2500 max dimension
-image-resize ./* --size 2500 --output ./web 
+# Usage:
+# image-web *.jpg
+# image-web *.jpg --size 2500
+# image-web *.jpg --output ./web
+
+set -euo pipefail
+shopt -s nullglob
+trap 'echo "Interrupted"; exit 130' INT
+
+SIZE=2500
+OUTDIR="./web"
+args=()
+
+while (( "$#" )); do
+    case "$1" in
+        --size)
+            SIZE="${2:-}"
+            shift 2
+            ;;
+        --output)
+            OUTDIR="${2:-}"
+            shift 2
+            ;;
+        -*)
+            echo "Unknown option: $1"
+            exit 1
+            ;;
+        *)
+            args+=("$1")
+            shift
+            ;;
+    esac
+done
+
+if [[ -z "$SIZE" || -z "$OUTDIR" ]]; then
+    echo "Missing value for: --size or --output"
+    exit 1
+fi
+
+files=("${args[@]}")
+
+if (( ${#files[@]} == 0 )); then
+    echo "No images provided"
+    exit 1
+fi
+
+# resize all to 2500 max dimension, or --size argument
+image-resize "${files[@]}" --size "$SIZE" --output "$OUTDIR"
 
 # correct colour profile
-image-srgb ./web/*
+image-srgb "${OUTDIR%/}"/*
 
 # convert pngs to webp
-image-webp ./web/*.png 
+pngs=("${OUTDIR%/}"/*.png)
+if (( ${#pngs[@]} )); then
+    image-webp "${pngs[@]}"
+    rm -f "${OUTDIR%/}"/*.png
+fi
 
-# delete pngs
-rm -rf ./web/*.png
